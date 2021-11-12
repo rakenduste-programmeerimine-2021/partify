@@ -66,7 +66,7 @@ A step by step series of examples that tell you how to get a development env run
 Downlaoding project and running it.
 
 ```
-$ git clone https://github.com/rakenduste-programmeerimine-2021/partify
+$ git clone https://github.com/rakenduste-programmeerimine-2021/partify.git
 $ cd partify/local-dev
 $ docker-compose up
 ```
