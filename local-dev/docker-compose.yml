@@ -1,0 +1,36 @@
+version: '3.4'
+
+services: 
+  client:
+    build:
+      context: '../client'
+    ports: 
+      - '3000:3000'
+    volumes: 
+      - '../client:/home/node/app:delegated'
+    command: 'run start'
+    container_name: 'client'
+
+  mongo: 
+    image: mongo:5.0.2
+    ports: 
+      - '27017:27017'
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    container_name: 'mongo'
+
+  server:
+    depends_on: 
+      - mongo
+    build:
+      context: '../server'
+    ports: 
+      - '8081:3000'
+      - '9000:9000'
+    environment: 
+      MONGODB_URI: mongodb://root:root@mongo/Partify?authSource=admin
+    volumes: 
+      - '../server:/home/node/app:delegated'
+    command: 'run dev'
+    container_name: 'server'
