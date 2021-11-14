@@ -92,6 +92,10 @@ $ git clone https://github.com/rakenduste-programmeerimine-2021/partify.git
 $ cd partify/local-dev
 ```
 ```
+$ cp .env.example .env
+```
+Change .env fields to your info.
+```
 $ docker-compose up
 ```
 
