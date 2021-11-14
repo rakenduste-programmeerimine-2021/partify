@@ -23,6 +23,7 @@
 ## 📑 Table of Contents
 
 - [About](#about)
+- [Functionality](#functionality)
 - [Wireframes](#wireframe)
 - [Getting Started](#getting_started)
 - [Usage](#usage)
@@ -36,14 +37,33 @@
 
   Most parties and nights out consist of only you and your friends, aka people you know. Project Partify helps you find new people to party with. The projects purpose is to create a platform to make it easier for tourists, people from out of town or just people who want to make new friends to find companions for a night out. 
 
+## 💻 Functionality <a name = "functionality"></a>
+- User authentication (registration, login/logout)
+- Front Page
+  - Posts feed
+  - React to posts with likes and comments
+  - Filter posts  (by time, by location, by votes, by tags)
+  - Like/Dislike posts
+  - Add posts
+  - Edit posts
+- Profile page
+  - User profile
+- Settings page
+  - Update page and user settings
+- Users can choose which event they would like to attend to.
+- Event posters can accept/deny users request.
+- After accepting users request, both users will be connected to each other.
+- After the event, event poster and user can rate each other.
+
+
 ## 📝 Wireframes <a name = "wireframe"></a>
 
-  <img src="wireframes/FrontPage.jpg" width="350" />
-  <img src="wireframes/createPost.jpg" width="350" />
-  <img src="wireframes/profile.jpg" width="350" />
-  <img src="wireframes/viewPost.jpg" width="350" />
-  <img src="wireframes/login.png" width="350" />
-  <img src="wireframes/register.png" width="350" />
+  <img src="wireframes/FrontPage.jpg" width="325" />
+  <img src="wireframes/createPost.jpg" width="325" />
+  <img src="wireframes/profile.jpg" width="325" />
+  <img src="wireframes/viewPost.jpg" width="325" />
+  <img src="wireframes/login.png" width="325" />
+  <img src="wireframes/register.png" width="325" />
 
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
@@ -67,7 +87,11 @@ Downlaoding project and running it.
 
 ```
 $ git clone https://github.com/rakenduste-programmeerimine-2021/partify.git
+```
+```
 $ cd partify/local-dev
+```
+```
 $ docker-compose up
 ```
 
