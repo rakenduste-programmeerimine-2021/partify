@@ -89,12 +89,16 @@ Downlaoding project and running it.
 $ git clone https://github.com/rakenduste-programmeerimine-2021/partify.git
 ```
 ```
-$ cd partify/local-dev
+$ cd partify/server/src/
 ```
 ```
 $ cp .env.example .env
 ```
 Change .env fields to your info.
+
+```
+$ cd ../../local-dev/
+```
 ```
 $ docker-compose up
 ```
