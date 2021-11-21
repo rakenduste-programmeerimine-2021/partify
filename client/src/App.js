@@ -1,23 +1,23 @@
-import logo from './logo.svg';
+import Header from './components/Header.js'
+import Login from './components/Login.js';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
+import { makeStyles } from '@mui/material'
+import Register from './components/Register.js';
+const useStyles = makeStyles
 
 function App() {
+  const classes = useStyles
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.container}>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route exact path='/'></Route>
+          <Route exact path='/login' element = {<Login/>} />
+          <Route exact path='/register' element = {<Register/>} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
