@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose')
-const User = require('./User');
-const Post = require('./Post');
+const User = require('./user.model');
+const Post = require('./post.model');
 
 const commentSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: User, required: true },

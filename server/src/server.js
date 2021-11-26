@@ -1,26 +1,50 @@
 const express = require('express')
-
 const PORT = process.env.PORT
 require("dotenv").config()
-require('./config/mongodb.config');
-
-const postRoutes = require('./routes/posts')
-const userRoutes = require('./routes/user')
-
+var bodyParser = require('body-parser')
+const cors = require("cors");
+const mongoose = require('mongoose')
+const {
+  LOCAL_DB_URL,
+  initial,
+  options
+} = require('./config/mongodb.config')
 const app = express()
-app.use(express.json());
 
-app.use('/api/post', postRoutes)
-//app.use('/api/user', userRoutes)
+var corsOptions = {
+  origin: process.env.CORS_ORIGIN
+};
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use(cors(corsOptions));
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(bodyParser.json());
+
+require('./routes/auth.routes')(app);
+// require('./routes/user.routes')(app);
+require('./routes/post.routes')(app);
+
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to the party."
+  });
+});
 
 app.get('*', (req, res) => {
   res.send('This route does not exist!')
 })
 
-app.listen(PORT, function () {
-  console.log(`Server Listening on ${PORT}`)
-});
+mongoose.connect(LOCAL_DB_URL, options).then(() => {
+    console.log("Successfully connect to MongoDB.");
+    initial;
+  }).then(() => {
+    app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`))
+  })
+  .catch(err => {
+    console.error("Connection error", err);
+    process.exit();
+  });

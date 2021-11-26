@@ -1,6 +1,6 @@
 require("dotenv").config()
-const mongoose = require('mongoose')
-
+const db = require("../models");
+const Role = db.role;
 // Options
 const options = {
     useNewUrlParser: true,
@@ -19,12 +19,29 @@ const dbConnectionURL = {
     'LOCAL_DB_URL': `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo/${MONGO_DB}?authSource=admin`,
 };
 
-mongoose.connect(dbConnectionURL.LOCAL_DB_URL, options)
-const dbStatus = mongoose.connection;
+exports.initial = function () {
+    Role.estimatedDocumentCount((err, count) => {
+        if (!err && count === 0) {
+            new Role({
+                name: "user"
+            }).save(err => {
+                if (err) {
+                    console.log("error", err);
+                }
 
-dbStatus.on('error',(err) => {
-    console.log(err)
-})
-dbStatus.once('open', () => {
-    console.log("Mongo connected!")
-})
+                console.log("added 'user' to roles collection");
+            });
+
+            new Role({
+                name: "admin"
+            }).save(err => {
+                if (err) {
+                    console.log("error", err);
+                }
+
+                console.log("added 'admin' to roles collection");
+            });
+        }
+    });
+}
+module.exports = dbConnectionURL, options
