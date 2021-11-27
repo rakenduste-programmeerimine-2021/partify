@@ -1,11 +1,31 @@
 const db = require("../models");
 const User = db.user;
 const Post = db.post;
-const Vote = db.vote;
 var fs = require('fs')
 
 
-
+updateUserPosts = async function (res, err, userId) {
+    try {
+        const postByUser = await Post.find({
+            user: userId
+        }, {
+            '_id': 1
+        })
+        if (postByUser.length > 0) {
+            const userPosts = []
+            for (let i = 0; i < postByUser.length; i++) {
+                userPosts.push(postByUser[i]._id)
+            }
+            const user = await User.findByIdAndUpdate(userId, {
+                "posts": userPosts
+            })
+        }
+        res.status(200).send("Post saved!")
+    } catch (err) {
+        res.status(400)
+        console.log(err)
+    }
+}
 
 // Creates new post in db and saves user file to uploads dir
 exports.createPost = async function (req, res) {
@@ -41,27 +61,50 @@ exports.createPost = async function (req, res) {
 
             const stringTags = req.body.tags
             const splitTags = stringTags.split(',');
+            const userId = req.userId
+            if (userId.match(/^[0-9a-fA-F]{24}$/)) {
 
-            const newPost = {
-                body: req.body.body,
-                postMediaType: postMediaType,
-                postMediaName: fullFileName,
-                title: req.body.title,
-                location: req.body.location,
-                tags: splitTags,
-                user: req.userId,
+                const newPost = {
+                    body: req.body.body,
+                    postMediaType: postMediaType,
+                    postMediaName: fullFileName,
+                    title: req.body.title,
+                    location: req.body.location,
+                    tags: splitTags,
+                    user: userId,
+                }
+                const createdPost = new Post(newPost)
+                createdPost.save(async function (err, result) {
+                    if (err) {
+                        console.log(err)
+                        res.status(400).send(`error ${err}`)
+                    }
+                    if (result) {
+                        try {
+                            console.log("1")
+                            const postByUser = await Post.find({
+                                user: userId
+                            }, {
+                                '_id': 1
+                            })
+                            if (postByUser.length > 0) {
+                                const userPosts = []
+                                for (let i = 0; i < postByUser.length; i++) {
+                                    userPosts.push(postByUser[i]._id)
+                                }
+                                const user = await User.findByIdAndUpdate(userId, {
+                                    "posts": userPosts
+                                })
+                            }
+                        } catch (e) {
+                            res.status(500)
+                        }
+                        res.status(200).send("Post saved!")
+                    }
+                })
+            } else {
+                res.status(400).send("User not found!")
             }
-
-            const createdPost = new Post(newPost)
-            createdPost.save(function (err, result) {
-                if (err) {
-                    console.log(err)
-                    res.status(400).send(`error ${err}`)
-                }
-                if (result) {
-                    res.status(200).send(`Saved ${createdPost}`)
-                }
-            })
         } else {
             res.status(400).send(`No file attached!`)
         }
@@ -73,12 +116,16 @@ exports.createPost = async function (req, res) {
 };
 
 
-// Doesn't really need explaining?
+// Gets one post with given id
 exports.getOnePost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id).populate("user", '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
-        if (!post) res.status(404).send("No post with that id found")
-        else res.status(200).send(post)
+        if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            const post = await Post.findById(req.params.id).populate("user", '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+            if (!post) res.status(404).send("No post with that id found")
+            else res.status(200).send(post)
+        } else {
+            res.status(400).send("Post not found!")
+        }
     } catch (e) {
         res.status(500)
     }
@@ -86,7 +133,7 @@ exports.getOnePost = async (req, res) => {
 }
 
 
-// Doesn't really need explaining?
+// Gets all the posts
 exports.getPosts = async (req, res) => {
     try {
         const posts = await Post.find({}).populate("user", '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
@@ -102,43 +149,31 @@ exports.getPosts = async (req, res) => {
 // Updates post when the user is the posts author or admin
 exports.updatePost = async (req, res) => {
     try {
-        var id = req.params.id
-        const oldPost = await Post.findById(id)
-        var hasAdmin = await isUserAdminBool(req.userId)
-        if (!oldPost) res.status(404).send("No post with that id found")
-        if (oldPost.user.toString() === req.userId || hasAdmin) {
-            var splitTags = oldPost.tags
-            var body = oldPost.body
-            var location = oldPost.location
-            var title = oldPost.title
-            if (req.body.tags) {
-                const stringTags = req.body.tags
-                splitTags = stringTags.split(',')
+        if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            var id = req.params.id
+            const stringTags = req.body.tags
+            var splitTags = stringTags.split(',')
+            const oldPost = await Post.findById(id)
+            var hasAdmin = await isUserAdminBool(req.userId)
+            if (!oldPost) res.status(404).send("No post with that id found")
+            if (oldPost.user.toString() === req.userId || hasAdmin) {
+                if (req.body.body.length == 0 || req.body.title.length == 0 ||
+                    req.body.location.length == 0) res.status(400).send("Fields can't be empty!")
+                const newPost = {
+                    body: req.body.body,
+                    title: req.body.title,
+                    tags: splitTags,
+                    location: req.body.location,
+                }
+                const updatedPost = await Post.findByIdAndUpdate(id, newPost)
+                res.status(200).send('Post updated!')
+            } else {
+                return res.status(401).send({
+                    message: "Unauthorized!"
+                });
             }
-
-            if (req.body.body) {
-                body = req.body.body
-            }
-            if (req.body.title) {
-                title = req.body.title
-            }
-            if (req.body.location) {
-                location = req.body.location
-            }
-            const newPost = {
-                body: body,
-                title: title,
-                tags: splitTags,
-                location: location,
-            }
-
-            const updatedPost = await Post.findByIdAndUpdate(id, newPost)
-            res.status(200).send(`Successfully updated the following post: \n 
-            ${updatedPost}`)
         } else {
-            return res.status(401).send({
-                message: "Unauthorized!"
-            });
+            res.status(400).send("Post not found!")
         }
     } catch (e) {
         res.status(500)
@@ -149,30 +184,34 @@ exports.updatePost = async (req, res) => {
 // Deletes post from db and removes post file when the user is the posts author or admin
 exports.deletePost = async (req, res) => {
     try {
-        var id = req.params.id
-        const post = await Post.findById(id)
-        const hasAdmin = await isUserAdminBool(req.userId)
-        if (!post) res.status(404).send("No post with that id found")
-        if (post.user.toString() === req.userId || hasAdmin) {
+        if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            var id = req.params.id
+            const post = await Post.findById(id)
+            const hasAdmin = await isUserAdminBool(req.userId)
             if (!post) res.status(404).send("No post with that id found")
-            else {
-                console.log(post.postMediaName)
-                try{
-                    fs.unlink(post.postMediaName, function (err) {
-                        if (err) console.log("file not found")
-                        post.delete();
-                        console.log('File deleted!');
-                        res.status(200).send("post deleted")
-                    });
-                } catch (e) {
-                    res.status(500)
+            if (post.user.toString() === req.userId || hasAdmin) {
+                if (!post) res.status(404).send("No post with that id found")
+                else {
+                    console.log(post.postMediaName)
+                    try {
+                        fs.unlink(post.postMediaName, function (err) {
+                            if (err) console.log("file not found")
+                            post.delete();
+                            console.log('File deleted!');
+                            res.status(200).send("post deleted")
+                        });
+                    } catch (e) {
+                        res.status(500)
+                    }
+
                 }
-                
+            } else {
+                return res.status(401).send({
+                    message: "Unauthorized!"
+                });
             }
         } else {
-            return res.status(401).send({
-                message: "Unauthorized!"
-            });
+            res.status(400).send("Post not found!")
         }
     } catch (e) {
         return res.status(500)
@@ -183,7 +222,7 @@ exports.deletePost = async (req, res) => {
 // Checks if user is admin
 isUserAdminBool = async (userId) => {
     const user = await User.findById(userId).populate("roles")
-    if (!user) res.status(404).send("User not found")
+    if (!user) return false
     for (let i = 0; i < user.roles.length; i++) {
         if (user.roles[i].name === "admin") {
             return true;

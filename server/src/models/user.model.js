@@ -3,7 +3,6 @@ const {
     model
 } = require('mongoose')
 
-
 const userSchema = new Schema({
     firstName: {
         type: String,
@@ -41,7 +40,8 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false 
     },
     roles: [{
         type: Schema.Types.ObjectId,
@@ -55,6 +55,13 @@ const userSchema = new Schema({
         type: Number,
         default: 0
     },
+    posts : [{
+        
+        type: Schema.Types.ObjectId,
+        ref: "Post"
+        
+        
+    }],
 }, {
     timestamps: true
 });

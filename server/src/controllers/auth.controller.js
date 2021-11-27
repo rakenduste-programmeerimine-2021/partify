@@ -28,6 +28,7 @@ exports.signup = (req, res) => {
             return;
         }
 
+        // Checks roles, if exists, then saves roles to user
         if (req.body.roles) {
             Role.find({
                     name: {
@@ -58,6 +59,7 @@ exports.signup = (req, res) => {
                 }
             );
         } else {
+            // If no role provided, gives default user role
             Role.findOne({
                 name: "user"
             }, (err, role) => {
@@ -86,11 +88,11 @@ exports.signup = (req, res) => {
     });
 };
 
-// If user with provided email exists, checks if password is valid, then logs in the user/ provides jwtToken
+// If user with provided email exists, checks if password is valid, then logs in the user/provides jwtToken
 exports.signin = (req, res) => {
     User.findOne({
             email: req.body.email
-        })
+        }).select('+password')
         .populate("roles", "-__v")
         .exec((err, user) => {
             if (err) {
