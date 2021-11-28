@@ -1,13 +1,13 @@
 const { Schema, model } = require('mongoose');
-const User = require('./User');
-const Comment = require('./Comment');
-const Post = require('./Post');
+const User = require('./user.model');
+const Comment = require('./comment.model');
+const Post = require('./post.model');
 
 
 
 const votesSchema = new Schema({
-    // Changes after user controller is created
-    user: { type: String, ref: User, required: true },
+    voter: { type: Schema.Types.ObjectId, ref: User, required: true },
+    votedUser: { type: Schema.Types.ObjectId, ref: User, required: true },
     comment: { type: Schema.Types.ObjectId, ref: Comment },
     post: { type: Schema.Types.ObjectId, ref: Post },
     liked: { type: Boolean, default: false},

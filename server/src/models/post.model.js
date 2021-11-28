@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-// const User = require('./User');
+const User = require('./user.model');
 // const Comment = require('./Comment');
 
 
@@ -12,10 +12,8 @@ const postSchema = new Schema({
   tags: { type: Array, required: true},
   likes: { type: Number, default: 0},
   dislikes: { type: Number, default: 0},
-  // enable after userController is working
-  // user: { type: Schema.Types.ObjectId, ref: User, required: true },
-  user: { type: String, required:true},
-  postType: { type: String, enum : ['Normal', 'Event'], required: true},
+  user: { type: Schema.Types.ObjectId, ref: User, required: true },
+  isLocked: { type: Boolean, default: false}
 }, {timestamps: true});
 
 const Post = model("Post", postSchema)
