@@ -24,15 +24,15 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 require('./routes/auth.routes')(app);
-// require('./routes/user.routes')(app);
+require('./routes/user.routes')(app);
 require('./routes/post.routes')(app);
 
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to the party."
-  });
-});
+// app.get("/", (req, res) => {
+//   res.json({
+//     message: "Welcome to the party."
+//   });
+// });
 
 app.get('*', (req, res) => {
   res.send('This route does not exist!')

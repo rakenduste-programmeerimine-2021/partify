@@ -9,7 +9,7 @@ const postSchema = new Schema({
   postMediaName: { type: String, required: true },
   title: { type: String, required: true },
   location: { type: String, required:true},
-  tags: { type: Array, required: true},
+  tags: { type: Array },
   likes: { type: Number, default: 0},
   dislikes: { type: Number, default: 0},
   user: { type: Schema.Types.ObjectId, ref: User, required: true },
