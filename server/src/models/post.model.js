@@ -1,6 +1,5 @@
 const { Schema, model } = require('mongoose');
 const User = require('./user.model');
-// const Comment = require('./Comment');
 
 
 const postSchema = new Schema({
@@ -13,7 +12,11 @@ const postSchema = new Schema({
   likes: { type: Number, default: 0},
   dislikes: { type: Number, default: 0},
   user: { type: Schema.Types.ObjectId, ref: User, required: true },
-  isLocked: { type: Boolean, default: false}
+  isLocked: { type: Boolean, default: false},
+  comments : [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+}],
 }, {timestamps: true});
 
 const Post = model("Post", postSchema)

@@ -2,6 +2,7 @@ const {
     authJwt
 } = require("../middleware");
 const userController = require("../controllers/user.controller");
+const votesController = require("../controllers/vote.controller")
 const multer = require('multer')
 const {
     check
@@ -52,6 +53,9 @@ module.exports = function (app) {
     app.get(
         "/api/users/admin",
         [authJwt.verifyToken, authJwt.isAdmin],
+        
         userController.adminBoard
     );
+    app.put('/api/user/like/:id', [authJwt.verifyToken], votesController.likeUser)
+    app.put('/api/user/dislike/:id', [authJwt.verifyToken], votesController.dislikeUser)
 };

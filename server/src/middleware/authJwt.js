@@ -27,25 +27,43 @@ verifyToken = (req, res, next) => {
     });
 };
 
-// Checks if user has admin role
+// Checks if user has admin role, if not, doesn't allow access
 isAdmin = async (req, res, next) => {
     const user = await User.findById(req.userId).populate("roles")
     if (!user) res.status(404).send("User not found")
-    for (let i = 0; i < user.roles.length; i++) {
-        if (user.roles[i].name === "admin") {
-            next();
-            return;
+    if(user.roles.length > 0){
+        for (let i = 0; i < user.roles.length; i++) {
+            if (user.roles[i].name === "admin") {
+                next();
+                return;
+            }
         }
     }
+    
     res.status(403).send({
         message: "Require Admin Role!"
     });
+}
+
+// Checks if user is admin, returns true or false
+isUserAdminBool = async (id) => {
+    const user = await User.findById(id).populate("roles")
+    if (!user) return false
+    if(user.roles.length > 0){
+        for (let i = 0; i < user.roles.length; i++) {
+            if (user.roles[i].name === "admin") {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 
 
 const authJwt = {
     verifyToken,
-    isAdmin
+    isAdmin,
+    isUserAdminBool
 };
 module.exports = authJwt;
