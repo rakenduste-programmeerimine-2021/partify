@@ -1,11 +1,8 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import React from 'react';
+import {AppBar, Box, Toolbar, Typography, Button, Tab} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonPinIcon from '@mui/icons-material/PersonPin';
 
 
 
@@ -31,12 +28,8 @@ export default function Header() {
           }}>
             PARTIFY
           </Typography>
-          <Button color="inherit" onClick={(e) => {
-            e.preventDefault()
-            window.location.href='/login'
-            }}>
-                LOGIN
-            </Button>
+          <Tab href='/login' icon={<LoginIcon />} aria-label="favorite" />
+          <Tab href='/register' icon={<PersonPinIcon />} aria-label="person" />    
         </Toolbar>
       </AppBar>
     </Box>
