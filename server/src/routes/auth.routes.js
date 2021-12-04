@@ -35,10 +35,10 @@ module.exports = function (app) {
             .normalizeEmail()
             .escape()
             .withMessage("Must be correctly formatted e-mail"),
-            check(["firstName", "userName", "lastName"]).isLength({
-                min: 1
+            check(["firstName", "lastName"]).isLength({
+                min: 1, max:64
             })
-            .withMessage("Name be at least 1 char long")
+            .withMessage("Name be between 1 and 64 characters")
             .trim()
             .exists()
             .matches(/^[A-ZÕÄÖÜa-zõäöü]+$/)
@@ -65,6 +65,10 @@ module.exports = function (app) {
             .isBefore(minDoB())
             .withMessage("Must be at least 18 years old!")
             .isAfter(oldestDoB()),
+            check("userName").trim()
+            .exists().escape().isLength({
+                min: 1, max:32
+            }).withMessage("Name be between 1 and 32 characters"),
             verifySignUp.verifyUNameEmail,
             verifySignUp.verifyRoles
         ], validationMiddleware,
