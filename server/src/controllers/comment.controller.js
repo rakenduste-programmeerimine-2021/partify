@@ -1,5 +1,4 @@
 const db = require("../models");
-const User = db.user;
 const Post = db.post;
 const Comment = db.comment;
 const {
@@ -42,10 +41,6 @@ exports.addComment = async function (req, res) {
         if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             var id = req.params.id
             const userId = req.userId
-            if (!req.body.body) {
-                res.status(400).send("Body is required!")
-                return
-            }
             const post = await Post.findById(id)
             if (!post) {
                 res.status(400).send("Post not found!")
@@ -105,10 +100,6 @@ exports.addReply = async function (req, res) {
             var commentId = req.params.commentId
             var postId = req.params.postId
             const userId = req.userId
-            if (!req.body.body) {
-                res.status(400).send("Body is required!")
-                return
-            }
             const comment = await Comment.findById(commentId)
             if (!comment) {
                 res.status(400).send("Comment not found!")
@@ -171,7 +162,11 @@ exports.deleteComment = async (req, res) => {
             var id = req.params.id
             const comment = await Comment.findById(id)
             const hasAdmin = await authJwt.isUserAdminBool(req.userId)
-            if (!comment) res.status(404).send("No comment with that id found")
+            if (!comment) {
+                res.status(404).send("No comment with that id found")
+                return
+            }
+
             if (comment.user.toString() === req.userId || hasAdmin) {
                 if (!comment) res.status(404).send("No comment with that id found")
                 else {
@@ -179,7 +174,7 @@ exports.deleteComment = async (req, res) => {
                         comment.delete();
                         res.status(200).send("Comment deleted")
                     } catch (e) {
-                        res.status(500)
+                        res.status(500).send(e)
                     }
                 }
             } else {
@@ -191,7 +186,7 @@ exports.deleteComment = async (req, res) => {
             res.status(400).send("Comment not found!")
         }
     } catch (e) {
-        return res.status(500)
+        return res.status(500).send(e)
     }
 
 }
