@@ -33,29 +33,37 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/api/user/:id", [authJwt.verifyToken], userController.userProfile);
+    app.get("/api/user/:id", [authJwt.verifyToken],
+        userController.userProfile);
     app.put("/api/user/:id/update", [
-        check(["firstName", "userName", "lastName"]).isLength({
-            min: 1
+        check(["firstName", "lastName"]).isLength({
+            min: 1,
+            max: 64
         })
-        .withMessage("Name be at least 1 char long")
+        .withMessage("Name be between 1 and 64 characters")
         .trim()
         .exists()
         .matches(/^[A-ZÕÄÖÜa-zõäöü]+$/)
         .escape()
         .withMessage("Name must be alphabetic"),
         check("phone")
-        .isMobilePhone(), authJwt.verifyToken
+        .isMobilePhone(), check("userName").trim()
+        .exists().escape().isLength({
+            min: 1,
+            max: 32
+        }).withMessage("Name be between 1 and 32 characters"), authJwt.verifyToken
     ], validationMiddleware, userController.updateUser);
     app.put("/api/user/:id/update/avatar", [authJwt.verifyToken],
         uploadFile.single('postFile'), userController.updateUserAvatar);
-    app.delete("/api/user/:id/delete", [authJwt.verifyToken], userController.deleteUser);
+    app.delete("/api/user/:id/delete", [authJwt.verifyToken],
+        userController.deleteUser);
     app.get(
         "/api/users/admin",
         [authJwt.verifyToken, authJwt.isAdmin],
-        
         userController.adminBoard
     );
-    app.put('/api/user/like/:id', [authJwt.verifyToken], votesController.likeUser)
-    app.put('/api/user/dislike/:id', [authJwt.verifyToken], votesController.dislikeUser)
+    app.put('/api/user/like/:id', [authJwt.verifyToken],
+        votesController.likeUser)
+    app.put('/api/user/dislike/:id', [authJwt.verifyToken],
+        votesController.dislikeUser)
 };
