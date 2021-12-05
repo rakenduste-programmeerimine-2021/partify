@@ -3,6 +3,10 @@ const User = db.user;
 const Post = db.post;
 const Vote = db.vote;
 var fs = require('fs')
+const {
+    authJwt
+} = require("../middleware");
+
 
 
 // Checks if id is in valid form, returns user information
@@ -29,7 +33,7 @@ exports.updateUser = async (req, res) => {
         if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             var id = req.params.id
             const oldUser = await User.findById(id)
-            var hasAdmin = await isUserAdminBool(id)
+            var hasAdmin = await authJwt.isUserAdminBool(id)
             if (!oldUser) res.status(404).send("No user with that id found")
             if (oldUser._id.toString() === id || hasAdmin) {
                 const newUser = {
@@ -75,7 +79,7 @@ exports.updateUserAvatar = async (req, res) => {
             if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
                 var id = req.params.id
                 const user = await User.findById(id)
-                var hasAdmin = await isUserAdminBool(id)
+                var hasAdmin = await authJwt.isUserAdminBool(id)
                 if (!user) res.status(404).send("No user with that id found")
                 if (user._id.toString() === id || hasAdmin) {
                     const userAvatar = {
@@ -105,7 +109,7 @@ exports.deleteUser = async (req, res) => {
         if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             var id = req.params.id
             const user = await User.findById(id)
-            const hasAdmin = await isUserAdminBool(id)
+            const hasAdmin = await authJwt.isUserAdminBool(id)
             if (!user) res.status(404).send("No user with that id found")
             if (user._id.toString() === id || hasAdmin) {
                 if (user.avatar !== "default_avatar.png") {
@@ -147,15 +151,3 @@ exports.adminBoard = async (req, res) => {
         res.status(500)
     }
 };
-
-// Checks if user is admin
-isUserAdminBool = async (userId) => {
-    const user = await User.findById(userId).populate("roles")
-    if (!user) return false
-    for (let i = 0; i < user.roles.length; i++) {
-        if (user.roles[i].name === "admin") {
-            return true;
-        }
-    }
-    return false;
-}
