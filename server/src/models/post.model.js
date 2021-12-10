@@ -12,7 +12,7 @@ const postSchema = new Schema({
   likes: { type: Number, default: 0},
   dislikes: { type: Number, default: 0},
   user: { type: Schema.Types.ObjectId, ref: User, required: true },
-  isLocked: { type: Boolean, default: false},
+  isEvent: { type: Boolean, default: false},
   comments : [{
     type: Schema.Types.ObjectId,
     ref: "Comment"

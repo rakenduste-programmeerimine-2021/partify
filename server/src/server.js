@@ -1,5 +1,5 @@
 const express = require('express')
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8080
 require("dotenv").config()
 var bodyParser = require('body-parser')
 const cors = require("cors");
@@ -28,11 +28,6 @@ require('./routes/user.routes')(app);
 require('./routes/post.routes')(app);
 
 
-// app.get("/", (req, res) => {
-//   res.json({
-//     message: "Welcome to the party."
-//   });
-// });
 
 app.get('*', (req, res) => {
   res.send('This route does not exist!')
@@ -48,3 +43,5 @@ mongoose.connect(LOCAL_DB_URL, options).then(() => {
     console.error("Connection error", err);
     process.exit();
   });
+
+module.exports = app;

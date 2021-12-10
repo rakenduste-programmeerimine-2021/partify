@@ -51,6 +51,7 @@ exports.createPost = async function (req, res) {
                     location: req.body.location,
                     tags: splitTags,
                     user: userId,
+                    isEvent: req.body.isEvent
                 }
                 const createdPost = new Post(newPost)
                 createdPost.save(async function (err, result) {
