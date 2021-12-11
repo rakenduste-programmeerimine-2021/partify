@@ -13,17 +13,19 @@ mongoose.connect(LOCAL_DB_URL, options);
 
 mongoose.connection
     .once('open', () => {
-        initial
+        initial,
+        mongoose.connection.collections.users.drop();
         console.log('Connected!')
     })
     .on('error', (error) => {
         console.warn('Error : ', error);
     });
 
-// runs before each test
-beforeEach((done) => {
-    mongoose.connection.collections.users.drop();
-    mongoose.connection.collections.comments.drop(() => {
-        done();
-    })
-});
+// // runs before each test
+// beforeEach((done) => {
+//     mongoose.connection.collections.users.drop();
+//     done()
+//     // mongoose.connection.collections.comments.drop(() => {
+//     //     done();
+//     // })
+// });
