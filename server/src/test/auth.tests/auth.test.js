@@ -1,10 +1,11 @@
-
 // Configure chai
 var chai = require('chai')
 var chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 chai.should();
+
+const userInfo = {};
 describe("Auth", () => {
     describe("POST auth/", () => {
         it("should register a new user", (done) => {
@@ -25,8 +26,8 @@ describe("Auth", () => {
                     res.should.have.status(200);
                     done();
                 })
-                
-        }); 
+
+        });
 
         it("should login newly made user", (done) => {
             chai.request("localhost:8080")
@@ -36,13 +37,9 @@ describe("Auth", () => {
                     "password": "123123123",
                 })
                 .end(function (req, res) {
-                    
                     res.should.have.status(200);
                     done();
-                    
                 })
-                
-        }); 
-
+        });
     });
 });

@@ -79,10 +79,12 @@ exports.addComment = async function (req, res) {
                         res.status(500)
                         return
                     }
+
+                    res.status(200).send(result)
+                    return
                 }
             })
-            res.status(200).send("Comment saved!")
-            return
+            
         } else {
             res.status(400).send("Comment not found")
             return

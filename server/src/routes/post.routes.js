@@ -17,7 +17,6 @@ const uploadFile = multer({
         fileSize: 100000000
     },
     fileFilter(req, file, cb) {
-        console.log(file)
         if (!file.originalname.toUpperCase().match(/\.(PNG|JPG|SVG|GIF|MPG|MOV|WMV|RM|MP4|MKV|AVI)$/)) {
             return cb(new Error('Bad file type'))
         }

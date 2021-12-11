@@ -18,10 +18,13 @@ exports.createPost = async function (req, res) {
             // Adds file extension to saved file.
             fs.readFile(req.file.path, (err, contents) => {
                 if (err) {
-                    console.log('Error: ', err);
+                    res.status(400).send(`error ${err}`)
+                    return
                 } else {
                     fs.rename(filePath, fullFileName, (err) => {
-                        if (err) throw err;
+                        if (err){res.status(400).send(`error ${err}`)
+                        return;
+                    }
                     });
                 }
             });
@@ -80,7 +83,7 @@ exports.createPost = async function (req, res) {
                             res.status(500)
                             return
                         }
-                        res.status(200).send("Post saved!")
+                        res.status(200).send(result)
                         return
                     }
                 })

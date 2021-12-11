@@ -11,6 +11,7 @@
   "author": "Karl Janar Kinkar & Torm Erik Raudvee",
   "license": "MIT",
   "devDependencies": {
+    "chai-image": "^3.0.0",
     "nodemon": "^2.0.12"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
-
 require("dotenv").config()
 const mongoose = require('mongoose');
+
+
 
 mongoose.Promise = global.Promise;
 const {
@@ -15,17 +16,11 @@ mongoose.connection
     .once('open', () => {
         initial,
         mongoose.connection.collections.users.drop();
+        mongoose.connection.collections.posts.drop();
+        mongoose.connection.collections.comments.drop();
+        mongoose.connection.collections.votes.drop();
         console.log('Connected!')
     })
     .on('error', (error) => {
         console.warn('Error : ', error);
     });
-
-// // runs before each test
-// beforeEach((done) => {
-//     mongoose.connection.collections.users.drop();
-//     done()
-//     // mongoose.connection.collections.comments.drop(() => {
-//     //     done();
-//     // })
-// });
