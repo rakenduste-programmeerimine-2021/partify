@@ -39,6 +39,8 @@ module.exports = function (app) {
         votesController.likePost)
     app.put('/api/post/dislike/:id', [authJwt.verifyToken],
         votesController.dislikePost)
+    app.get('/api/post/:id', [authJwt.verifyToken],
+        postController.getOnePost)
     app.delete('/api/post/delete/:id', [authJwt.verifyToken],
         postController.deletePost)
     app.put('/api/post/edit/:id', [check(["body", "tags", "title", "location"])
@@ -57,28 +59,26 @@ module.exports = function (app) {
     ], uploadFile.single('postFile'), postController.createPost)
 
     // Post comment routes
-    app.get('/api/post/comment', [authJwt.verifyToken],
+    app.get('/api/posts/comment', [authJwt.verifyToken],
         commentController.getComments)
-    app.get('/api/post/comment/:id', [authJwt.verifyToken],
+    app.get('/api/post/comments/:id', [authJwt.verifyToken],
         commentController.getOneComment)
-    app.get('/api/post/:id', [authJwt.verifyToken],
-        postController.getOnePost)
-    app.post('/api/post/:id/comment', [check(["body"])
+    app.post('/api/posts/:id/comment', [check(["body"])
         .isString().isLength({
             min: 1,
             max: 128
         }).trim(), authJwt.verifyToken
     ], commentController.addComment)
-    app.post('/api/post/:postId/reply/:commentId', [check(["body"])
+    app.post('/api/posts/:postId/reply/:commentId', [check(["body"])
         .isString().isLength({
             min: 1,
             max: 128
         }).trim(), authJwt.verifyToken
     ], commentController.addReply)
-    app.put('/api/post/comment/like/:id', [authJwt.verifyToken],
+    app.put('/api/posts/comment/like/:id', [authJwt.verifyToken],
         votesController.likeComment)
-    app.put('/api/post/comment/dislike/:id', [authJwt.verifyToken],
+    app.put('/api/posts/comment/dislike/:id', [authJwt.verifyToken],
         votesController.dislikeComment)
-    app.delete('/api/post/comment/delete/:id', [authJwt.verifyToken],
+    app.delete('/api/posts/comment/delete/:id', [authJwt.verifyToken],
         commentController.deleteComment)
 };

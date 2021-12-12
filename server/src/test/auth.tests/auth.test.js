@@ -19,8 +19,8 @@ describe("Auth", () => {
                     "phone": 5555555,
                     "gender": "Male",
                     "dateOfBirth": "2000-11-23",
-                    "password": "123123123",
-                    "confirm_password": "123123123"
+                    "password": "aA1!123123",
+                    "confirm_password": "aA1!123123"
                 })
                 .end(function (req, res) {
                     res.should.have.status(200);
@@ -34,7 +34,7 @@ describe("Auth", () => {
                 .post('/api/auth/signin')
                 .send({
                     "email": "testt@test.com",
-                    "password": "123123123",
+                    "password": "aA1!123123",
                 })
                 .end(function (req, res) {
                     res.should.have.status(200);

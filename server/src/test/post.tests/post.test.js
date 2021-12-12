@@ -15,7 +15,7 @@ describe("Post", () => {
             .post('/api/auth/signin')
             .send({
                 "email": "testt@test.com",
-                "password": "123123123",
+                "password": "aA1!123123",
             })
             .end(function (req, res) {
                 res.should.have.status(200);
@@ -123,10 +123,10 @@ describe("Post", () => {
         });
     });
 
-    describe("POST /api/post/:id/comment", () => {
+    describe("POST /api/posts/:id/comment", () => {
         it("Should create a new comment under specific post", (done) => {
             chai.request("localhost:8080")
-                .post(`/api/post/${userInfo.postId}/comment`)
+                .post(`/api/posts/${userInfo.postId}/comment`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`,
                 })
@@ -141,10 +141,10 @@ describe("Post", () => {
         });
     });
 
-    describe("PUT /api/post/comment/like/:id", () => {
+    describe("PUT /api/posts/comment/like/:id", () => {
         it("User likes comment", done => {
             chai.request("localhost:8080")
-                .put(`/api/post/comment/like/${userInfo.commentId}`)
+                .put(`/api/posts/comment/like/${userInfo.commentId}`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
@@ -154,10 +154,10 @@ describe("Post", () => {
                 })
         });
     });
-    describe("PUT /api/post/comment/dislike/:id", () => {
+    describe("PUT /api/posts/comment/dislike/:id", () => {
         it("User dislikes comment", done => {
             chai.request("localhost:8080")
-                .put(`/api/post/comment/dislike/${userInfo.commentId}`)
+                .put(`/api/posts/comment/dislike/${userInfo.commentId}`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
@@ -168,10 +168,10 @@ describe("Post", () => {
         });
     });
 
-    describe("POST /api/post/:postId/reply/:commentId", () => {
+    describe("POST /api/posts/:postId/reply/:commentId", () => {
         it("Should create a new reply for specific comment", (done) => {
             chai.request("localhost:8080")
-                .post(`/api/post/${userInfo.postId}/reply/${userInfo.commentId}`)
+                .post(`/api/posts/${userInfo.postId}/reply/${userInfo.commentId}`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`,
                 })
@@ -185,10 +185,10 @@ describe("Post", () => {
         });
     });
 
-    describe("GET /api/post/comment", () => {
+    describe("GET /api/posts/comment", () => {
         it("Should get all the comments", done => {
             chai.request("localhost:8080")
-                .get('/api/post/comment')
+                .get('/api/posts/comment')
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
@@ -199,10 +199,10 @@ describe("Post", () => {
         });
     });
 
-    describe("GET /api/post/comment/:id", () => {
+    describe("GET /api/posts/comment/:id", () => {
         it("Should get specific comment", done => {
             chai.request("localhost:8080")
-                .get(`/api/post/comment/${userInfo.commentId}`)
+                .get(`/api/posts/comment/${userInfo.commentId}`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
@@ -227,10 +227,10 @@ describe("Post", () => {
         });
     });
 
-    describe("DELETE /api/post/comment/delete/:id", () => {
+    describe("DELETE /api/posts/comment/delete/:id", () => {
         it("Deletes comment", done => {
             chai.request("localhost:8080")
-                .delete(`/api/post/comment/delete/${userInfo.commentId}`)
+                .delete(`/api/posts/comment/delete/${userInfo.commentId}`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
