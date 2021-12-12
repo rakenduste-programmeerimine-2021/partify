@@ -19,7 +19,7 @@ exports.userProfile = async (req, res) => {
             res.status(200).send(user);
 
         } else {
-            res.status(400).send("User not found!")
+            res.status(404).send("User not found!")
         }
     } catch (e) {
         console.log(e)
@@ -51,7 +51,7 @@ exports.updateUser = async (req, res) => {
                 });
             }
         } else {
-            res.status(400).send("Post not found!")
+            res.status(404).send("Post not found!")
         }
     } catch (e) {
         res.status(500)
@@ -93,7 +93,7 @@ exports.updateUserAvatar = async (req, res) => {
                     });
                 }
             } else {
-                res.status(400).send("Post not found!")
+                res.status(404).send("Post not found!")
             }
         } else {
             res.status(400).send("No file!")
@@ -131,16 +131,13 @@ exports.deleteUser = async (req, res) => {
                 });
             }
         } else {
-            res.status(400).send("User not found!")
+            res.status(404).send("User not found!")
         }
     } catch (e) {
         return res.status(500)
     }
 }
 
-exports.userBoard = (req, res) => {
-    res.status(200).send("User Content.");
-};
 
 exports.adminBoard = async (req, res) => {
     try {

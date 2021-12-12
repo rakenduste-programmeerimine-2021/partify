@@ -31,7 +31,7 @@ verifyToken = (req, res, next) => {
 isAdmin = async (req, res, next) => {
     const user = await User.findById(req.userId).populate("roles")
     if (!user) res.status(404).send("User not found")
-    if(user.roles.length > 0){
+    if (user.roles.length > 0) {
         for (let i = 0; i < user.roles.length; i++) {
             if (user.roles[i].name === "admin") {
                 next();
@@ -39,7 +39,7 @@ isAdmin = async (req, res, next) => {
             }
         }
     }
-    
+
     res.status(403).send({
         message: "Require Admin Role!"
     });
@@ -49,7 +49,7 @@ isAdmin = async (req, res, next) => {
 isUserAdminBool = async (id) => {
     const user = await User.findById(id).populate("roles")
     if (!user) return false
-    if(user.roles.length > 0){
+    if (user.roles.length > 0) {
         for (let i = 0; i < user.roles.length; i++) {
             if (user.roles[i].name === "admin") {
                 return true;

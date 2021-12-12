@@ -36,7 +36,8 @@ module.exports = function (app) {
             .escape()
             .withMessage("Must be correctly formatted e-mail"),
             check(["firstName", "lastName"]).isLength({
-                min: 1, max:64
+                min: 1,
+                max: 64
             })
             .withMessage("Name be between 1 and 64 characters")
             .trim()
@@ -44,10 +45,9 @@ module.exports = function (app) {
             .matches(/^[A-ZÕÄÖÜa-zõäöü]+$/)
             .escape()
             .withMessage("Name must be alphabetic"),
-            check('password', 'Password is requried')
-            .isLength({
-                min: 6
-            })
+            check('password',
+                "Password must be at least 8 characters long, 1 lowercase, 1 uppercase, 1 number and 1 symbol!")
+            .isStrongPassword()
             .custom((val, {
                 req,
                 loc,
@@ -67,7 +67,8 @@ module.exports = function (app) {
             .isAfter(oldestDoB()),
             check("userName").trim()
             .exists().escape().isLength({
-                min: 1, max:32
+                min: 1,
+                max: 32
             }).withMessage("Name be between 1 and 32 characters"),
             verifySignUp.verifyUNameEmail,
             verifySignUp.verifyRoles

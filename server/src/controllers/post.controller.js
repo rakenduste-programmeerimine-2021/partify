@@ -18,13 +18,14 @@ exports.createPost = async function (req, res) {
             // Adds file extension to saved file.
             fs.readFile(req.file.path, (err, contents) => {
                 if (err) {
-                    res.status(400).send(`error ${err}`)
+                    res.status(406)
                     return
                 } else {
                     fs.rename(filePath, fullFileName, (err) => {
-                        if (err){res.status(400).send(`error ${err}`)
-                        return;
-                    }
+                        if (err) {
+                            res.status(409)
+                            return;
+                        }
                     });
                 }
             });
@@ -88,7 +89,7 @@ exports.createPost = async function (req, res) {
                     }
                 })
             } else {
-                res.status(400).send("User not found!")
+                res.status(404).send("User not found!")
                 return
             }
         } else {
@@ -123,7 +124,7 @@ exports.getOnePost = async (req, res) => {
             if (!post) res.status(404).send("No post with that id found")
             else res.status(200).send(post)
         } else {
-            res.status(400).send("Post not found!")
+            res.status(404).send("Post not found!")
         }
     } catch (e) {
         res.status(500)
@@ -135,8 +136,60 @@ exports.getOnePost = async (req, res) => {
 // Gets all the posts
 exports.getPosts = async (req, res) => {
     try {
-        const posts = await Post.find({}).populate("user",
-            '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        var type = req.params.type;
+        console.log(type)
+        if (type === "timeD") {
+            var posts = await Post.find({}).sort({
+                    "createdAt": -1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+
+        } else if (type === "timeA") {
+            var posts = await Post.find({}).sort({
+                    "createdAt": 1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+
+        } else if (type === "voteD") {
+            var posts = await Post.find({}).sort({
+                    "likes": -1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        } else if (type === "voteA") {
+            var posts = await Post.find({}).sort({
+                    "likes": 1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        } else if (type === "locD") {
+            var posts = await Post.find({}).sort({
+                    "location": -1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        } else if (type === "locA") {
+            var posts = await Post.find({}).sort({
+                    "location": 1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        } else if (type === "tagD") {
+            var posts = await Post.find({}).sort({
+                    "tags": -1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        } else if (type === "tagA") {
+            var posts = await Post.find({}).sort({
+                    "tags": 1
+                })
+                .populate("user",
+                    '-password -gender -dateOfBirth -phone -email -createdAt -updatedAt -__v')
+        }
+
         if (!posts) res.status(404).send("No posts found")
         else res.status(200).send(posts)
     } catch (e) {
@@ -173,7 +226,7 @@ exports.updatePost = async (req, res) => {
                 });
             }
         } else {
-            res.status(400).send("Post not found!")
+            res.status(404).send("Post not found!")
         }
     } catch (e) {
         res.status(500)
@@ -211,11 +264,10 @@ exports.deletePost = async (req, res) => {
                 });
             }
         } else {
-            res.status(400).send("Post not found!")
+            res.status(404).send("Post not found!")
         }
     } catch (e) {
         return res.status(500)
     }
 
 }
-

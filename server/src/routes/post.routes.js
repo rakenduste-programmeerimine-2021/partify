@@ -33,7 +33,7 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/api/post/', [authJwt.verifyToken],
+    app.get('/api/post/sort/:type', [authJwt.verifyToken],
         postController.getPosts)
     app.put('/api/post/like/:id', [authJwt.verifyToken],
         votesController.likePost)
