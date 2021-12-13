@@ -13,7 +13,7 @@ describe("User", () => {
             .post('/api/auth/signin')
             .send({
                 "email": "testt@test.com",
-                "password": "123123123",
+                "password": "aA1!123123",
             })
             .end(function (req, res) {
                 res.should.have.status(200);
