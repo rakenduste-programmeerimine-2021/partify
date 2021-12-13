@@ -8,6 +8,8 @@ import Register from './components/Register.js';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Profile from './components/Profile.js';
 import PostView from './components/PostView.js';
+import AddPost from './components/AddPost.js';
+import Settings from './components/Settings.js';
 
 const useStyles = makeStyles
 
@@ -24,6 +26,8 @@ function App() {
           <Route exact path='/register' element = {<Register/>} />
           <Route exact path='/profile' element = {<Profile/>} />
           <Route exact path='/viewpost' element = {<PostView/>} />
+          <Route exact path='/addpost' element= {<AddPost/>} />
+          <Route exact path='/settings' element= {<Settings/>} />
         </Routes>
       </BrowserRouter>
     </div>

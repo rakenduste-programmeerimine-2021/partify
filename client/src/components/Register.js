@@ -113,7 +113,7 @@ export default class Register extends Component {
             confirm_password: "",
             phone: "",
             dateOfBirth: new Date().toLocaleString(),
-            gender: "Female",
+            gender: "Female"
         }
     }
 

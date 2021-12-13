@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Paper, Card, CardActions, CardContent, Avatar, CardMedia, CardHeader, IconButton, Typography } from '@mui/material';
+import { Grid, Paper, Card, CardActions, CardContent, Avatar, CardMedia, CardHeader, IconButton, Typography, Chip } from '@mui/material';
 import { red } from '@mui/material/colors'
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
@@ -21,12 +21,17 @@ export default function PostView () {
                     margin='normal' 
                     style = {cardStyle}
                     >
-                        <CardHeader
+                        <Chip
+                            size="big"
                             avatar = {
-                                <Avatar sx = {{ bgcolor: red[500]}}>
+                                <Avatar sx = {{ bgcolor: red[500], width:56, height: 56}}>
                                     M
                                 </Avatar>
                             }
+                            label='Mari Maasikas'
+                        />
+                        <CardHeader
+                            
                             title = "TÜÜTUKASSA"
                             subheader = "Laupäeva hommik, 2021"
                         />
