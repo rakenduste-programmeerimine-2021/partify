@@ -4,6 +4,7 @@ require("dotenv").config()
 var bodyParser = require('body-parser')
 const cors = require("cors");
 const mongoose = require('mongoose')
+const path = require('path')
 const {
   LOCAL_DB_URL,
   initial,
@@ -22,16 +23,11 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-
+app.use(express.static('/usr/src/app/uploads/'))
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 require('./routes/post.routes')(app);
 
-
-
-app.get('*', (req, res) => {
-  res.send('This route does not exist!')
-})
 
 mongoose.connect(LOCAL_DB_URL, options).then(() => {
     console.log("Successfully connect to MongoDB.");
