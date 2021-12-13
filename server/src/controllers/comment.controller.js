@@ -8,7 +8,9 @@ const {
 exports.getComments = async function (req, res) {
     try {
         const comments = await Comment.find({})
-        res.status(200).send(comments)
+        if (!comments) res.status(404).send("No comments found")
+        else res.status(200).send(comments)
+
     } catch (e) {
         console.log(e)
         res.status(500)
@@ -20,14 +22,13 @@ exports.getOneComment = async (req, res) => {
     try {
         if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             const comment = await Comment.findById(req.params.id).populate({
-                    path: "user",
-                    select: "-gender -dateOfBirth -phone -email -createdAt -updatedAt -__v -posts"
-                }
-            )
+                path: "user",
+                select: "-gender -dateOfBirth -phone -email -createdAt -updatedAt -__v -posts"
+            })
             if (!comment) res.status(404).send("No comment with that id found")
             else res.status(200).send(comment)
         } else {
-            res.status(400).send("Comment not found!")
+            res.status(404).send("Comment not found!")
         }
     } catch (e) {
         res.status(500)
@@ -43,7 +44,7 @@ exports.addComment = async function (req, res) {
             const userId = req.userId
             const post = await Post.findById(id)
             if (!post) {
-                res.status(400).send("Post not found!")
+                res.status(404).send("Post not found!")
                 return
             }
             const newComment = {
@@ -84,9 +85,9 @@ exports.addComment = async function (req, res) {
                     return
                 }
             })
-            
+
         } else {
-            res.status(400).send("Comment not found")
+            res.status(404).send("Comment not found")
             return
         }
     } catch (e) {
@@ -104,7 +105,7 @@ exports.addReply = async function (req, res) {
             const userId = req.userId
             const comment = await Comment.findById(commentId)
             if (!comment) {
-                res.status(400).send("Comment not found!")
+                res.status(404).send("Comment not found!")
                 return
             }
             const newComment = {
@@ -147,7 +148,7 @@ exports.addReply = async function (req, res) {
             res.status(200).send("Reply saved!")
             return
         } else {
-            res.status(400).send("Comment not found")
+            res.status(404).send("Comment not found")
             return
         }
     } catch (e) {
@@ -185,7 +186,7 @@ exports.deleteComment = async (req, res) => {
                 });
             }
         } else {
-            res.status(400).send("Comment not found!")
+            res.status(404).send("Comment not found!")
         }
     } catch (e) {
         return res.status(500).send(e)

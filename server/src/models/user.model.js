@@ -41,7 +41,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
-        select: false 
+        select: false
     },
     roles: [{
         type: Schema.Types.ObjectId,
@@ -55,7 +55,7 @@ const userSchema = new Schema({
         type: Number,
         default: 0
     },
-    posts : [{
+    posts: [{
         type: Schema.Types.ObjectId,
         ref: "Post"
     }],

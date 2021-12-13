@@ -25,10 +25,10 @@ describe("Post", () => {
             })
     });
 
-    describe("GET /api/post", () => {
+    describe("GET /api/post/sort/:type", () => {
         it("Should get all the posts", done => {
             chai.request("localhost:8080")
-                .get('/api/post/')
+                .get('/api/post/sort/timeD')
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
