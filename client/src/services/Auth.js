@@ -20,6 +20,7 @@ class AuthService{
 
     logout() {
         localStorage.removeItem("user")
+        window.location = '/login'
     }
 
     register(firstName, lastName, userName, email, password, confirm_password, dateOfBirth, phone, gender) {
@@ -43,6 +44,10 @@ class AuthService{
     getCurrentUser(){
         return JSON.parse(localStorage.getItem("user"))
     }
+
+    /*getUser(){
+        return JSON.parse()
+    }*/
 }
 
 export default new AuthService()

@@ -59,9 +59,9 @@ export default class Login extends Component {
         if (this.checkBtn.context._errors.length === 0) {
             Auth.login(this.state.email, this.state.password).then(
                 () => {
-                    alert("dima")
-                    this.props.history.push('/')
-                    window.location.reload()
+                    console.log("dima")
+                    //this.props.history.push('/')
+                    window.location = '/profile'
                 },
                 error => {
                     const resMessage = 

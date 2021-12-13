@@ -18,6 +18,7 @@ services:
     env_file: ../server/src/.env
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - app-network
   mongo:
@@ -38,6 +39,9 @@ services:
     image: partify-client
     container_name: partify-client
     command: npm run start
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ../client/:/usr/app
       - /usr/app/node_modules
