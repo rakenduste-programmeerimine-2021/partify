@@ -65,13 +65,17 @@ export default function Settings() {
                 navigate("/profile", 3);
             })
             .catch((error) => {
+                
                 if (error.response.data.message) {
                     const resMessage =
                         error.response &&
                         error.response.data &&
                         error.response.data.message;
                     setMessages(resMessage);
-                } else {
+                } else if(error.response.data){
+                    const resMessage = error.response.data
+                    setMessages(resMessage);
+                }else {
                     const resMessage = error.response.data.msg[0].msg;
                     setMessages(resMessage);
                 }
@@ -274,6 +278,7 @@ export default function Settings() {
                                             label="First Name"
                                             type="text"
                                             multiline
+                                            required
                                             value={formValues.firstName}
                                             onChange={handleInputChange}
                                         />
@@ -284,6 +289,7 @@ export default function Settings() {
                                             name="lastName"
                                             label="Last Name"
                                             type="text"
+                                            required
                                             multiline
                                             value={formValues.lastName}
                                             onChange={handleInputChange}
@@ -295,6 +301,7 @@ export default function Settings() {
                                             name="userName"
                                             label="Username"
                                             type="text"
+                                            required
                                             multiline
                                             value={formValues.userName}
                                             onChange={handleInputChange}
@@ -306,6 +313,7 @@ export default function Settings() {
                                             name="email"
                                             label="Email"
                                             type="email"
+                                            required
                                             multiline
                                             value={formValues.email}
                                             onChange={handleInputChange}
@@ -317,6 +325,7 @@ export default function Settings() {
                                             name="phone"
                                             label="Phone"
                                             multiline
+                                            required
                                             type="number"
                                             value={formValues.phone}
                                             onChange={handleInputChange}

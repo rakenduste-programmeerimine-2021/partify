@@ -9,6 +9,7 @@ const {
 } = require("express-validator");
 const validationMiddleware = require("../middleware/validationMiddleware");
 
+
 const uploadFile = multer({
     dest: "./uploads/avatar/",
     limits: {
@@ -69,7 +70,7 @@ module.exports = function (app) {
             .normalizeEmail()
             .escape()
             .withMessage("Must be correctly formatted e-mail"),
-            authJwt.verifyToken,
+            authJwt.verifyToken, 
         ],
         validationMiddleware,
         userController.updateUser
