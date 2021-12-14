@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Auth from "../services/Auth";
 import UserService from "../services/UserService";
-import AuthService from "../services/Auth"
+import AuthService from "../services/Auth";
 import {
     Typography,
     Grid,
@@ -17,7 +17,6 @@ import {
     Radio,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 
 const paperStyle = {
     padding: 20,
@@ -45,9 +44,8 @@ export default function Settings() {
     const [loading, setLoading] = useState(true);
     const [loadingImg, setLoadingImg] = useState(true);
     const [formValues, setFormValues] = useState(defaultValues);
-
+    const [messages, setMessages] = useState("");
     const navigate = useNavigate();
-
 
     // Load user info
 
@@ -61,8 +59,27 @@ export default function Settings() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        UserService.putUserProfile(formValues);
-        navigate("/profile", 3);
+        UserService.putUserProfile(formValues)
+            .then((res) => {
+                setMessages("");
+                navigate("/profile", 3);
+            })
+            .catch((error) => {
+                
+                if (error.response.data.message) {
+                    const resMessage =
+                        error.response &&
+                        error.response.data &&
+                        error.response.data.message;
+                    setMessages(resMessage);
+                } else if(error.response.data){
+                    const resMessage = error.response.data
+                    setMessages(resMessage);
+                }else {
+                    const resMessage = error.response.data.msg[0].msg;
+                    setMessages(resMessage);
+                }
+            });
     };
 
     const addUserInfo = (res) => {
@@ -78,13 +95,17 @@ export default function Settings() {
     };
 
     useEffect(() => {
-        if (currentUser === null) return navigate("/login")
-        UserService.getUserProfile(currentUser.id).then((res) => {
-            const avatarPic = res.avatar.split("/").reverse();
-            setAvatar(API_URL + avatarPic[0]);
-            setLoading(false);
-            addUserInfo(res);
-        });
+        if (currentUser === null) return navigate("/login");
+        UserService.getUserProfile(currentUser.id)
+            .then((res) => {
+                const avatarPic = res.avatar.split("/").reverse();
+                setAvatar(API_URL + avatarPic[0]);
+                setLoading(false);
+                addUserInfo(res);
+            })
+            .catch((error) => {
+                navigate("/settings");
+            });
     }, []);
 
     const counter = useRef(0);
@@ -92,9 +113,6 @@ export default function Settings() {
         counter.current += 1;
         setLoadingImg(false);
     };
-
-
-
 
     // Change avatar
 
@@ -117,14 +135,13 @@ export default function Settings() {
         setIsImagePicked(true);
     };
 
-
     // Account deletion
 
     const handleDeleteSubmit = (e) => {
         e.preventDefault();
-        UserService.deleteUser(formValues.id)
+        UserService.deleteUser(formValues.id);
         AuthService.logout();
-        navigate("/login")
+        navigate("/login");
     };
 
     // While profile information is not loaded yet
@@ -143,7 +160,7 @@ export default function Settings() {
             </div>
         );
     }
-    
+
     // When profile info is loaded
     return (
         <div>
@@ -152,10 +169,10 @@ export default function Settings() {
                     <Grid align={"center"}>
                         <Stack spacing={2}>
                             <Grid item>
-                                    <Typography variant="h4">
-                                        Change avatar
-                                        </Typography>
-                                    </Grid>
+                                <Typography variant="h4">
+                                    Change avatar
+                                </Typography>
+                            </Grid>
                             {/* Avatar change */}
                             <form onSubmit={handleImageSubmit}>
                                 <div>
@@ -195,7 +212,6 @@ export default function Settings() {
                                         }}
                                     >
                                         <Typography>
-                                           
                                             <input
                                                 accept="image/*"
                                                 id="postFile"
@@ -228,19 +244,32 @@ export default function Settings() {
                                     </div>
                                 </div>
                             </form>
-                            </Stack>
-                            </Grid>
-                            </Paper>
-                            <Paper style={paperStyle}>
+                        </Stack>
+                    </Grid>
+                </Paper>
+                <Paper style={paperStyle}>
                     <Grid align={"center"}>
                         <Stack spacing={2}>
                             {/* Profile change */}
                             <form onSubmit={handleSubmit}>
                                 <Stack spacing={2}>
-                                <Grid item>
-                                    <Typography variant="h4">
-                                        Change profile
+                                    <Grid item>
+                                        <Typography variant="h4">
+                                            Change profile
                                         </Typography>
+                                    </Grid>
+                                    <Grid>
+                                        <h2 />
+                                        {messages && (
+                                            <div className="form-group">
+                                                <div
+                                                    className="alert alert-danger"
+                                                    role="alert"
+                                                >
+                                                    {messages}
+                                                </div>
+                                            </div>
+                                        )}
                                     </Grid>
                                     <Grid item>
                                         <TextField
@@ -249,6 +278,7 @@ export default function Settings() {
                                             label="First Name"
                                             type="text"
                                             multiline
+                                            required
                                             value={formValues.firstName}
                                             onChange={handleInputChange}
                                         />
@@ -259,6 +289,7 @@ export default function Settings() {
                                             name="lastName"
                                             label="Last Name"
                                             type="text"
+                                            required
                                             multiline
                                             value={formValues.lastName}
                                             onChange={handleInputChange}
@@ -270,6 +301,7 @@ export default function Settings() {
                                             name="userName"
                                             label="Username"
                                             type="text"
+                                            required
                                             multiline
                                             value={formValues.userName}
                                             onChange={handleInputChange}
@@ -281,6 +313,7 @@ export default function Settings() {
                                             name="email"
                                             label="Email"
                                             type="email"
+                                            required
                                             multiline
                                             value={formValues.email}
                                             onChange={handleInputChange}
@@ -292,6 +325,7 @@ export default function Settings() {
                                             name="phone"
                                             label="Phone"
                                             multiline
+                                            required
                                             type="number"
                                             value={formValues.phone}
                                             onChange={handleInputChange}
@@ -359,15 +393,19 @@ export default function Settings() {
                         <Stack spacing={2}>
                             {/* Account deletion */}
                             <form onSubmit={handleDeleteSubmit}>
-                            <Stack spacing={2}>
-                                <Grid item>
-                                    <Typography style={{color:"red"}} variant="h4">
-                                        DELETE ACCOUNT
+                                <Stack spacing={2}>
+                                    <Grid item>
+                                        <Typography
+                                            style={{ color: "red" }}
+                                            variant="h4"
+                                        >
+                                            DELETE ACCOUNT
                                         </Typography>
                                     </Grid>
                                     <Grid item>
-                                    <Typography>
-                                        Once deleted, your account can't be recovered!
+                                        <Typography>
+                                            Once deleted, your account
+                                            can't be recovered!
                                         </Typography>
                                     </Grid>
                                     <Grid item>
@@ -380,11 +418,11 @@ export default function Settings() {
                                             DELETE
                                         </Button>
                                     </Grid>
-                                    </Stack>
+                                </Stack>
                             </form>
-                            </Stack>
-                            </Grid>
-                            </Paper>
+                        </Stack>
+                    </Grid>
+                </Paper>
             </Grid>
         </div>
     );

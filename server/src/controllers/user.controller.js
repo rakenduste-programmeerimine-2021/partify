@@ -32,6 +32,15 @@ exports.updateUser = async (req, res) => {
     try {
         if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             var id = req.params.id
+            const checkEmail = await User.findOne({email:req.body.email})
+            if(checkEmail){
+                console.log(checkEmail._id + " " + id)
+                if (checkEmail._id != id) res.status(400).send("Email taken")
+            }
+            const checkUname = await User.findOne({userName:req.body.userName})
+            if(checkUname){
+                if (checkUname._id != id) res.status(400).send("Username taken")
+            }
             const oldUser = await User.findById(id)
             var hasAdmin = await authJwt.isUserAdminBool(id)
             if (!oldUser) res.status(404).send("No user with that id found")

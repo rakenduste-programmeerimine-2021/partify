@@ -17,11 +17,20 @@ const uploadFile = multer({
         fileSize: 100000000
     },
     fileFilter(req, file, cb) {
-        if (!file.originalname.toUpperCase().match(/\.(PNG|JPG|SVG|GIF|MPG|MOV|WMV|RM|MP4|MKV|AVI)$/)) {
+        if (!file) {
+            return cb(new Error('No file!'))
+        }
+        // only permit image mimetypes
+        const image = file.mimetype.startsWith("image");
+        const video = file.mimetype.startsWith("video");
+        if (image || video) {
+            cb(undefined, true)
+        } else {
+            console.log("file not supported");
+            errorReq = true;
             return cb(new Error('Bad file type'))
         }
-        cb(undefined, true)
-    }
+    },
 })
 
 module.exports = function (app) {
@@ -56,7 +65,7 @@ module.exports = function (app) {
             max: 128
         }).trim(),
         authJwt.verifyToken
-    ], uploadFile.single('postFile'), postController.createPost)
+    ], uploadFile.single('image'), postController.createPost)
 
     // Post comment routes
     app.get('/api/posts/comment', [authJwt.verifyToken],
