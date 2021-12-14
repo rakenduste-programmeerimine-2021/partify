@@ -1,153 +1,184 @@
-import React, { Component } from "react";
-import { Grid, Paper, Avatar, TextField, Button, Typography, Link } from '@mui/material'
-import CelebrationIcon from '@mui/icons-material/Celebration';
+import {
+    Grid,
+    Paper,
+    Avatar,
+    TextField,
+    Button,
+    Typography,
+    Stack,
+} from "@mui/material";
+import CelebrationIcon from "@mui/icons-material/Celebration";
 import Form from "react-validation/build/form";
-import CheckButton from "react-validation/build/button";
 import Auth from "../services/Auth";
+import React, { useState, useRef } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import CheckButton from "react-validation/build/button";
 
-const required = value => {
+const required = (value) => {
     if (!value) {
-        return(
+        return (
             <div className="alert alert-danger" role="alert">
                 This field is required!
             </div>
-        )
+        );
     }
-}
+};
 
-    const paperStyle={padding: 20, height: '70vh', width:360, margin:'20px auto'}
-    const avatarStyle={color:'#b3ff00', backgroundColor:'white'}
+const paperStyle = {
+    padding: 20,
+    height: "70vh",
+    width: 360,
+    margin: "20px auto",
+};
 
-export default class Login extends Component {
-    
-    constructor(props){
-        super(props)
-        this.handleLogin = this.handleLogin.bind(this)
-        this.onChangeEmail = this.onChangeEmail.bind(this)
-        this.onChangePassword = this.onChangePassword.bind(this)
 
-        this.state = {
-            email:"",
-            password:"",
-            loading: false,
-            message:""
-        }
-    }
+const avatarStyle = { color: "#b3ff00", backgroundColor: "white" };
 
-    onChangeEmail(e) {
-        this.setState({
-            email: e.target.value
-        })
-    }
-    
-    onChangePassword(e) {
-        this.setState({
-            password: e.target.value
-        })
-    }
+export default function Login() {
+    const form = useRef();
+    const checkBtn = useRef();
 
-    handleLogin(e) {
-        e.preventDefault()
+    const defaultValues = {
+        email: "",
+        password: "",
+        loading: false,
+        message: "",
+    };
 
-        this.setState({
-            message:"",
-            loading: true
-        })
+    const [formValues, setFormValues] = useState(defaultValues);
+    const navigate = useNavigate();
 
-        this.form.validateAll()        
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues({
+            ...formValues,
+            [name]: value,
+        });
+    };
 
-        if (this.checkBtn.context._errors.length === 0) {
-            Auth.login(this.state.email, this.state.password).then(
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        setFormValues({
+            message: "",
+            loading: true,
+        });
+
+        form.current.validateAll();
+
+        if (checkBtn.current.context._errors.length === 0) {
+            Auth.login(formValues.email, formValues.password).then(
                 () => {
-                    console.log("dima")
-                    //this.props.history.push('/')
-                    window.location = '/profile'
+                    navigate("/");
                 },
-                error => {
-                    const resMessage = 
-                    (error.response && 
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString()
-
-                    this.setState({
-                        loading: false,
-                        message: resMessage
-                    })
+                (error) => {
+                    if (error.response.data.message) {
+                        const resMessage =
+                            error.response &&
+                            error.response.data &&
+                            error.response.data.message;
+                        setFormValues({
+                            message: resMessage,
+                            loading: false,
+                            email: "",
+                            password: "",
+                        });
+                    } else {
+                        const resMessage =
+                            error.response.data.msg[0].msg;
+                        setFormValues({
+                            message: resMessage,
+                            loading: false,
+                            email: "",
+                            password: "",
+                        });
+                    }
                 }
-            )
+            );
         } else {
-            console.log("pizdec")
-            this.setState({
-                loading: false
-            })
+            setFormValues({
+                loading: false,
+            });
         }
-    }
+    };
 
-    render(){
-        return(
-            <div>
-                <Form
-                    onSubmit={this.handleLogin}
-                    ref={c => { this.form = c}}
-                    >
-                    <Grid>
-                        <Paper elevation={10} style={paperStyle}>
-                            <Grid align={'center'}>
-                                <Avatar style={avatarStyle}><CelebrationIcon/></Avatar>
-                                <h2>Welcome to the party!</h2>
+    return (
+        <div>
+            <Form onSubmit={handleLogin} ref={form}>
+                <Grid>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Grid align={"center"}>
+                            <Avatar style={avatarStyle}>
+                                <CelebrationIcon />
+                            </Avatar>
+                            <h2>Welcome to the party!</h2>
+                        </Grid>
+                        <Stack spacing={2}>
+                            <Grid item>
+                                <Grid item>
+                                    <TextField
+                                        id="email"
+                                        name="email"
+                                        label="Email"
+                                        type="email"
+                                        value={formValues.email}
+                                        onChange={handleInputChange}
+                                        validations={[required]}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <TextField
+                                        id="password"
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        value={formValues.password}
+                                        onChange={handleInputChange}
+                                        validations={[required]}
+                                    />
+                                </Grid>
+                                <h2 />
+                                <Grid item>
+                                    {" "}
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                    >
+                                        Log in
+                                    </Button>
+                                </Grid>
+                                <Grid>
+                                    <h2 />
+                                    {formValues.message && (
+                                        <div className="form-group">
+                                            <div
+                                                className="alert alert-danger"
+                                                role="alert"
+                                            >
+                                                {formValues.message}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <Typography sx={{ flexGrow: 1 }}>
+                                        Don't have an account?
+                                        <NavLink
+                                            to="/register"
+                                            underline="hover"
+                                        >
+                                            Register
+                                        </NavLink>
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <TextField 
-                                margin='normal' 
-                                label='Email' 
-                                fullWidth 
-                                required 
-                                id="filled-basic" 
-                                variant="filled"
-                                value = {this.state.email}
-                                onChange = {this.onChangeEmail}
-                                validations = {[required]} 
-                            />                    
-                            <TextField 
-                                margin='normal' 
-                                label='Password' 
-                                type='password' 
-                                fullWidth 
-                                required 
-                                id="filled-basic" 
-                                variant="filled"
-                                value={this.state.password}
-                                onChange={this.onChangePassword}
-                                validations={[required]} 
-                            />
-                            <h2/>
-                            <Grid>
-                                <Button 
-                                type='submit' 
-                                color='primary'  
-                                fullWidth
-                                disabled={this.state.loading}
-                                >
-                                    LOG IN
-                                </Button>
-                                <h2/>
-                                <CheckButton
-                                style={{ display: "none" }}
-                                ref={c => {
-                                    this.checkBtn = c;
-                                }}
-                                />
-                                <Typography sx={{ flexGrow: 1 }}>
-                                    Don't have an account?  
-                                    <Link href='/register' underline="hover">Register</Link>
-                                </Typography>
-                            </Grid>
-                            
-                        </Paper>
-                    </Grid>
-                </Form>
-            </div>
-        )
-    }
+                        </Stack>
+                    </Paper>
+                </Grid>
+                <CheckButton
+                    style={{ display: "none" }}
+                    ref={checkBtn}
+                />
+            </Form>
+        </div>
+    );
 }
