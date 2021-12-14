@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+const user = JSON.parse(localStorage.getItem("user"))
 const API_URL = 'http://localhost:8080/api/post/'
 
 class PostService {
@@ -7,24 +7,21 @@ class PostService {
 
     }
 
-    createPost(body, postMediaType, postMediaName, title, location, tags, likes, dislikes, user, isEvent, comments){
-        return axios.post(API_URL + "posted", {
-            body,
-            postMediaType,
-            postMediaName,
-            title,
-            location,
-            tags,
-            likes,
-            dislikes,
-            user,
-            isEvent,
-            comments
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+    createPost(data){
+        const fData = new FormData() 
+        fData.append('image', data.image)
+        fData.append('body', data.body)
+        fData.append('title', data.title)
+        fData.append('tags', data.tags)
+        fData.append('location', data.location)
+        if(!data.isEvent)data.isEvent = false
+        fData.append('isEvent', data.isEvent)
+        return axios.post(API_URL + "create", fData, 
+            { headers: { 
+                'Content-Type': data.image.type,
+                'x-access-token' : user.accessToken
+            }}
+        )
     }
 }
 

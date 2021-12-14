@@ -48,13 +48,13 @@ module.exports = function (app) {
                 min: 1,
                 max: 64,
             })
-            .withMessage("Name be between 1 and 64 characters")
+            .withMessage("Name must be between 1 and 64 characters")
             .trim()
             .exists()
             .matches(/^[A-ZÕÄÖÜa-zõäöü]+$/)
             .escape()
             .withMessage("Name must be alphabetic"),
-            check("phone").isMobilePhone(),
+            check("phone").isMobilePhone().withMessage("Phone must be a number"),
             check("userName")
             .trim()
             .exists()
@@ -63,7 +63,7 @@ module.exports = function (app) {
                 min: 1,
                 max: 32,
             })
-            .withMessage("Name be between 1 and 32 characters"),
+            .withMessage("Name must be between 1 and 32 characters"),
             check("email")
             .isEmail()
             .normalizeEmail()
