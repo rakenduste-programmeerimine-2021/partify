@@ -40,6 +40,7 @@ exports.updateUser = async (req, res) => {
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
                     userName: req.body.userName,
+                    email: req.body.email,
                     phone: req.body.phone,
                     gender: req.body.gender,
                 }
@@ -51,7 +52,7 @@ exports.updateUser = async (req, res) => {
                 });
             }
         } else {
-            res.status(404).send("Post not found!")
+            res.status(404).send("User not found!")
         }
     } catch (e) {
         res.status(500)
@@ -60,6 +61,7 @@ exports.updateUser = async (req, res) => {
 
 exports.updateUserAvatar = async (req, res) => {
     try {
+        console.log(req.file)
         if (req.file) {
             const originalName = req.file.originalname
             const fileExtension = originalName.split('.').pop()
@@ -93,7 +95,7 @@ exports.updateUserAvatar = async (req, res) => {
                     });
                 }
             } else {
-                res.status(404).send("Post not found!")
+                res.status(404).send("User not found!")
             }
         } else {
             res.status(400).send("No file!")
