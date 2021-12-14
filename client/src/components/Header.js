@@ -10,7 +10,7 @@ import { Component } from 'react';
 import Auth from '../services/Auth';
 import Profile from './Profile';
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import { NavLink } from "react-router-dom";
 const appStyle = {backgroundColor:'rgb(68 122 48)'}
 const typoStyle = {cursor:'pointer'}
 
@@ -57,26 +57,22 @@ export default class Header extends Component {
                 sx={{ mr: 2 }}
               >
               </IconButton>
-              <Typography style={typoStyle} variant="h6" component="div" sx={{ flexGrow: 1 }}
-              onClick={(e) => {
-                  e.preventDefault()
-                  window.location.href='/'
-              }}>
+              <Typography style={typoStyle} variant="h6" component={NavLink} to="/" sx={{ flexGrow: 1 }} style={{color: 'white', textDecoration: 'none'}}>
                 PARTIFY
               </Typography>
 
               {currentUser ? (
                 <div>
-                  <Tab href='/profile' icon={<PersonIcon />} aria-label="person" />    
-                  <Tab href='/settings' icon={<SettingsIcon />} aria-label="settings" />    
-                  <Tab href='/addpost' icon={<AddIcon />} aria-label="add" />    
-                  <Tab href='/viewpost' icon={<PersonPinIcon />} aria-label="person" />         
-                  <Tab href='login' onClick={this.logOut} icon={<LogoutIcon/>}/>
+                  <Tab icon={<PersonIcon />} aria-label="person" component={NavLink} to="/profile" /> 
+                  <Tab icon={<SettingsIcon />} aria-label="settings"component={NavLink} to="/settings" />    
+                  <Tab icon={<AddIcon />} aria-label="add" component={NavLink} to="/addpost" />    
+                  <Tab icon={<PersonPinIcon />} aria-label="person"component={NavLink} to="/viewpost" />         
+                  <Tab onClick={this.logOut} component={NavLink} to="/login" icon={<LogoutIcon/>}/>
                 </div>
               ) : (
                 <div>
-                  <Tab href='/login' icon={<LoginIcon />} aria-label="login" />
-                  <Tab href='/register' icon={<PersonPinIcon />} aria-label="register" />    
+                  <Tab icon={<LoginIcon />} aria-label="login" component={NavLink} to="/login" />
+                  <Tab icon={<PersonPinIcon />} aria-label="register" component={NavLink} to="/register" />    
                 </div>
               )}            
             
