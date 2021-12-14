@@ -4,7 +4,7 @@ require("dotenv").config()
 var bodyParser = require('body-parser')
 const cors = require("cors");
 const mongoose = require('mongoose')
-const path = require('path')
+
 const {
   LOCAL_DB_URL,
   initial,

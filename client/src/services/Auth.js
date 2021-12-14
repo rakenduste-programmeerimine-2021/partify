@@ -20,7 +20,7 @@ class AuthService{
 
     logout() {
         localStorage.removeItem("user")
-        window.location = '/login'
+        // window.location = '/login'
     }
 
     register(firstName, lastName, userName, email, password, confirm_password, dateOfBirth, phone, gender) {
