@@ -154,7 +154,7 @@ export default function AddPost() {
                         >
                             <Typography>
                                 <input
-                                    accept="image/*"
+                                    accept="image/*, video/* "
                                     id="image"
                                     name="image"
                                     type="file"
