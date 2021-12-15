@@ -13,7 +13,7 @@ import {
 import { red } from "@mui/material/colors";
 import ImageIcon from "@mui/icons-material/Image";
 import PostService from "../services/PostService";
-import Form from "react-validation/build/form";
+
 import CheckButton from "react-validation/build/button";
 import { NavLink, useNavigate } from "react-router-dom";
 import Auth from "../services/Auth";
@@ -92,7 +92,7 @@ export default function AddPost() {
 
     return (
         <div>
-            <Form onSubmit={handlePostSubmit}>
+            <form onSubmit={handlePostSubmit}>
                 <Grid align={"center"}>
                     <Paper elevation={4} style={paperStyle}>
                         <h2>What's up? </h2>
@@ -113,64 +113,68 @@ export default function AddPost() {
                         </Grid>
 
                         <h2 />
-                        <TextField
-                            id="title"
-                            name="title"
-                            label="Title"
-                            fullWidth
-                            style={inputStyle}
-                            required
-                            onChange={onPostChange}
-                        />
-                        <h2 />
-                        <Grid>
+                        <Grid item>
                             <TextField
-                             fullWidth
+                                id="title"
+                                name="title"
+                                label="Title"
+                                fullWidth
+                                style={inputStyle}
+                                required
+                                inputProps={{
+                                    maxLength: 96,
+                                }}
+                                onChange={onPostChange}
+                            />
+                        </Grid>
+                        <h2 />
+                        <Grid item>
+                            <TextField
+                                fullWidth
                                 id="location"
                                 name="location"
                                 label="Location"
                                 style={inputStyle}
                                 required
+                                inputProps={{
+                                    maxLength: 96,
+                                }}
                                 onChange={onPostChange}
                             />
                         </Grid>
                         <h2 />
-                        <Grid rowSpacing={2}>
+                        <Grid item>
                             <Typography>
-                                <label for="tags">
+                                <label htmlFor="tags">
                                     Separate tags with commas
                                 </label>
-                                <TextField
-                                    id="tags"
-                                    fullWidth
-                                    name="tags"
-                                    label="Tags"
-                                    style={inputStyle}
-                                    required
-                                    onChange={onPostChange}
-                                />
                             </Typography>
+                            <TextField
+                                id="tags"
+                                fullWidth
+                                name="tags"
+                                label="Tags"
+                                style={inputStyle}
+                                required
+                                inputProps={{
+                                    maxLength: 96,
+                                }}
+                                onChange={onPostChange}
+                            />
                         </Grid>
                         <h2 />
-                        <Grid
-                            item
-                            xs
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Typography>
-                                <input
-                                    accept="image/*, video/* "
-                                    id="image"
-                                    name="image"
-                                    type="file"
-                                    onChange={onPostChange}
-                                    required
-                                />
-                            </Typography>
-                        </Grid>
+
+                        <Typography>
+                            <input
+                                accept="image/*, video/* "
+                                id="image"
+                                name="image"
+                                type="file"
+                                onChange={onPostChange}
+                                required
+                            />
+                        </Typography>
+
                         <h2 />
                         <FormControlLabel
                             control={<Checkbox />}
@@ -180,16 +184,21 @@ export default function AddPost() {
                             onChange={onPostChange}
                         />
                         <h2 />
-                        <TextField
-                            id="body"
-                            name="body"
-                            label="Body"
-                            multiline
-                            rows={10}
-                            fullWidth
-                            required
-                            onChange={onPostChange}
-                        />
+                        <Grid item>
+                            <TextField
+                                id="body"
+                                name="body"
+                                label="Body"
+                                multiline
+                                inputProps={{
+                                    maxLength: 256,
+                                }}
+                                rows={6}
+                                fullWidth
+                                required
+                                onChange={onPostChange}
+                            />
+                        </Grid>
 
                         <h2 />
                         <Button fullWidth type="submit">
@@ -197,7 +206,7 @@ export default function AddPost() {
                         </Button>
                     </Paper>
                 </Grid>
-            </Form>
+            </form>
         </div>
     );
 }

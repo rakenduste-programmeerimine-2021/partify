@@ -83,7 +83,7 @@ export default function Profile(userId) {
         e.preventDefault();
         VoteService.putLikeUser(profile._id)
             .then((res) => {
-                setValue(prevState=>!prevState);
+                setValue((prevState) => !prevState);
                 // navigate("/profile", 0);
                 // navigate("/profile", profile._id);
             })
@@ -95,7 +95,7 @@ export default function Profile(userId) {
         e.preventDefault();
         VoteService.putDislikeUser(profile._id)
             .then((res) => {
-                setValue(prevState=>!prevState);
+                setValue((prevState) => !prevState);
                 // navigate("/profile", 0);
                 // navigate("/profile", profile._id);
             })
@@ -113,9 +113,7 @@ export default function Profile(userId) {
                         <Grid align={"center"}>
                             <Stack spacing={2}>
                                 <LinearProgress />
-                                <Button onClick={onLogout}>
-                                    Logout
-                                </Button>
+                                
                             </Stack>
                         </Grid>
                     </Paper>
@@ -270,8 +268,49 @@ export default function Profile(userId) {
                                             new Date(post.createdAt),
                                             "H:mm dd-MM-yyyy"
                                         )}{" "}
-                                        @{post.location}
+                                        @{post.location}{" "}
+                                        
                                     </Typography>
+                                    <Grid
+                                            spacing={0}
+                                            container
+                                            direction={"row"}
+                                            justifyContent="center"
+                                        >
+                                            {post.tags.map(
+                                                (tag, tKey) => {
+                                                    return (
+                                                        <CardActions key={
+                                                            tKey
+                                                        }>
+                                                            <Card
+                                                                
+                                                                align={
+                                                                    "center"
+                                                                }
+                                                                sx={{
+                                                                    backgroundColor:
+                                                                        "#447a30",
+                                                                    display:
+                                                                        "block",
+                                                                    
+                                                                    width:
+                                                                        tag.length *
+                                                                        12,
+                                                                        fontSize: '18px'
+                                                                }}
+                                                                
+                                                            >
+                                                                {" "}
+                                                                {
+                                                                    tag
+                                                                }{" "}
+                                                            </Card>
+                                                        </CardActions>
+                                                    );
+                                                }
+                                            )}
+                                        </Grid>
                                 </Typography>
                             </Paper>
                         );
