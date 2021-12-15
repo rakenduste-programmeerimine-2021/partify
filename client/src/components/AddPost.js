@@ -47,11 +47,13 @@ export default function AddPost() {
     }, []);
 
     const handlePostSubmit = (e) => {
-            e.preventDefault();
-            if(!post)setMessages("Fill all the fields!")
-            PostService.createPost(post).then(res => {
+        e.preventDefault();
+        if (!post) setMessages("Fill all the fields!");
+        PostService.createPost(post)
+            .then((res) => {
                 navigate("/profile");
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 if (error.response.data.message) {
                     const resMessage =
                         error.response &&
@@ -63,20 +65,19 @@ export default function AddPost() {
                     setMessages(resMessage);
                 }
             });
-            
     };
 
     const onPostChange = (e) => {
         const { name, value } = e.target;
-        if(name === "image"){
+        if (name === "image") {
             setPost({
                 ...post,
                 [name]: e.target.files[0],
             });
-        } else if(name === "isEvent"){
+        } else if (name === "isEvent") {
             setPost({
                 ...post,
-                [name]: e.target.checked
+                [name]: e.target.checked,
             });
         } else {
             setPost({
@@ -89,7 +90,6 @@ export default function AddPost() {
     const [selectedImage, setSelectedImage] = useState();
     const [isImagePicked, setIsImagePicked] = useState(false);
 
-
     return (
         <div>
             <Form onSubmit={handlePostSubmit}>
@@ -98,20 +98,19 @@ export default function AddPost() {
                         <h2>What's up? </h2>
                     </Paper>
                     <Paper elevation={4} style={paperStyle}>
-                    <Grid>
-                                        <h2 />
-                                        {messages && (
-                                            <div className="form-group">
-                                                <div
-                                                    className="alert alert-danger"
-                                                    role="alert"
-                                                >
-                                                    {messages}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </Grid>
-                        
+                        <Grid>
+                            <h2 />
+                            {messages && (
+                                <div className="form-group">
+                                    <div
+                                        className="alert alert-danger"
+                                        role="alert"
+                                    >
+                                        {messages}
+                                    </div>
+                                </div>
+                            )}
+                        </Grid>
 
                         <h2 />
                         <TextField
@@ -124,8 +123,9 @@ export default function AddPost() {
                             onChange={onPostChange}
                         />
                         <h2 />
-                        <Grid rowSpacing={2}>
+                        <Grid>
                             <TextField
+                             fullWidth
                                 id="location"
                                 name="location"
                                 label="Location"
@@ -134,16 +134,24 @@ export default function AddPost() {
                                 onChange={onPostChange}
                             />
                         </Grid>
+                        <h2 />
                         <Grid rowSpacing={2}>
-                            <TextField
-                                id="tags"
-                                name="tags"
-                                label="Tags"
-                                style={inputStyle}
-                                required
-                                onChange={onPostChange}
-                            />
+                            <Typography>
+                                <label for="tags">
+                                    Separate tags with commas
+                                </label>
+                                <TextField
+                                    id="tags"
+                                    fullWidth
+                                    name="tags"
+                                    label="Tags"
+                                    style={inputStyle}
+                                    required
+                                    onChange={onPostChange}
+                                />
+                            </Typography>
                         </Grid>
+                        <h2 />
                         <Grid
                             item
                             xs
@@ -163,6 +171,7 @@ export default function AddPost() {
                                 />
                             </Typography>
                         </Grid>
+                        <h2 />
                         <FormControlLabel
                             control={<Checkbox />}
                             id="isEvent"

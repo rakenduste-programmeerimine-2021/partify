@@ -9,9 +9,14 @@ import {
     Button,
     LinearProgress,
     Card,
+    CardActions,
+    IconButton,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import { format, utcToZonedTime } from "date-fns-tz";
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import VoteService from "../services/VoteService";
 
 const paperStyle = {
     padding: 20,
@@ -23,10 +28,9 @@ const paperStyle = {
 const API_URL = "http://localhost:8080/avatar/";
 var isAdminBool = false;
 
-export default function Profile(newSetting) {
+export default function Profile(userId) {
     const navigate = useNavigate();
     const currentUser = Auth.getCurrentUser();
-    
 
     // Logs user out and redirects to login page
     const onLogout = (e) => {
@@ -35,17 +39,21 @@ export default function Profile(newSetting) {
         navigate("/login");
     };
 
-    
     const [profile, setProfile] = React.useState([]);
     const [avatar, setAvatar] = React.useState();
     const [loading, setLoading] = useState(true);
     const [loadingImg, setLoadingImg] = useState(true);
     const [post, setPosts] = useState(false);
+    const [value, setValue] = useState(false);
 
-    // Gets user information from BE
+    // Gets user information from server
     useEffect(() => {
-        if (currentUser === null) return navigate("/login")
-        UserService.getUserProfile(currentUser.id)
+        // console.log(value)
+        //console.log(userId.length);
+        if (currentUser === null) return navigate("/login");
+        if (!userId.length) userId = currentUser.id;
+        // setValue(prevState=>!prevState);
+        UserService.getUserProfile(userId)
             .then((res) => {
                 setProfile(res);
                 const avatarPic = res.avatar.split("/").reverse();
@@ -55,7 +63,7 @@ export default function Profile(newSetting) {
             .catch((err) => {
                 console.log(err);
             });
-    }, [newSetting]);
+    }, [value]);
 
     // While image Loads
     const counter = useRef(0);
@@ -69,6 +77,31 @@ export default function Profile(newSetting) {
     const isAdmin = (e) => {
         e.preventDefault();
         isAdminBool = profile.roles.length > 1;
+    };
+
+    const handleLike = (e) => {
+        e.preventDefault();
+        VoteService.putLikeUser(profile._id)
+            .then((res) => {
+                setValue(prevState=>!prevState);
+                // navigate("/profile", 0);
+                // navigate("/profile", profile._id);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+    const handleDislike = (e) => {
+        e.preventDefault();
+        VoteService.putDislikeUser(profile._id)
+            .then((res) => {
+                setValue(prevState=>!prevState);
+                // navigate("/profile", 0);
+                // navigate("/profile", profile._id);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     // While profile information is not loaded yet
@@ -172,21 +205,34 @@ export default function Profile(newSetting) {
                                     "dd-MM-yyyy"
                                 )}
                             </Typography>
+                            <Grid
+                                container
+                                spacing={0}
+                                direction="column"
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                <CardActions>
+                                    <IconButton
+                                        aria-label="like"
+                                        onClick={handleLike}
+                                    >
+                                        <ThumbUpAltIcon />
+                                        {/* {posts.likes} */}
+                                    </IconButton>
+                                    <IconButton
+                                        aria-label="dislike"
+                                        onClick={handleDislike}
+                                    >
+                                        <ThumbDownAltIcon />
+                                        {/* {posts.dislikes} */}
+                                    </IconButton>
+                                </CardActions>
+                            </Grid>
                             <Typography>
                                 Likes: {profile.likes} &nbsp; Dislikes:{" "}
                                 {profile.dislikes}
                             </Typography>
-                            <Grid item>
-                                        {" "}
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={onLogout}
-                                        >
-                                            Logout
-                                        </Button>
-                                    </Grid>
-                            
                         </Stack>
                     </Grid>
                 </Paper>
@@ -206,7 +252,7 @@ export default function Profile(newSetting) {
                     {profile.posts.map((post, key) => {
                         return (
                             <Paper style={paperStyle} key={key}>
-                                <Typography  variant="h5">
+                                <Typography variant="h5">
                                     <NavLink
                                         to="/register"
                                         underline="hover"
