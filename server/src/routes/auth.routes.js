@@ -42,7 +42,7 @@ module.exports = function (app) {
             .withMessage("Name be between 1 and 64 characters")
             .trim()
             .exists()
-            .matches(/^[A-ZÕÄÖÜa-zõäöü]+$/)
+            .isString()
             .escape()
             .withMessage("Name must be alphabetic"),
             check('password',
@@ -64,7 +64,7 @@ module.exports = function (app) {
             check("dateOfBirth")
             .isBefore(minDoB())
             .withMessage("Must be at least 18 years old!")
-            .isAfter(oldestDoB()),
+            .isAfter(oldestDoB()).withMessage("You can't be this old!"),
             check("userName").trim()
             .exists().escape().isLength({
                 min: 1,

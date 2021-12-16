@@ -52,7 +52,7 @@ module.exports = function (app) {
             .withMessage("Name must be between 1 and 64 characters")
             .trim()
             .exists()
-            .matches(/^[A-ZÕÄÖÜa-zõäöü]+$/)
+            .isString()
             .escape()
             .withMessage("Name must be alphabetic"),
             check("phone").isMobilePhone().withMessage("Phone must be a number"),
