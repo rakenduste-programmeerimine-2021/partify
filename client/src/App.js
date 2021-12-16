@@ -10,6 +10,7 @@ import Profile from './components/Profile.js';
 import PostView from './components/PostView.js';
 import AddPost from './components/AddPost.js';
 import Settings from './components/Settings.js';
+import Posts from './components/Posts.js';
 
 const useStyles = makeStyles
 
@@ -21,7 +22,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route exact path='/' element = {<Home/>} />
+          <Route exact path='/' element = {<Posts/>} />
           <Route exact path='/login' element = {<Login/>} />
           <Route exact path='/register' element = {<Register/>} />
           <Route exact path='/profile' element = {<Profile/>} />

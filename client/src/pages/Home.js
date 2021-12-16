@@ -5,6 +5,8 @@ import { styled } from '@mui/material/styles'
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentIcon from '@mui/icons-material/Comment';
+import Posts from "../components/Posts";
+
 
 const paperStyle = {padding: 20, height:'100%', width:860, margin:'20px auto'}
 const cardStyle = {padding: 20}
