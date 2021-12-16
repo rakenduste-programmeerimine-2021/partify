@@ -52,18 +52,26 @@ module.exports = function (app) {
         postController.getOnePost)
     app.delete('/api/post/delete/:id', [authJwt.verifyToken],
         postController.deletePost)
-    app.put('/api/post/edit/:id', [check(["body", "tags", "title", "location"])
+    app.put('/api/post/edit/:id', [check(["tags", "title", "location"])
         .isString().isLength({
             min: 1,
-            max: 128
-        }).trim(),
+            max: 96
+        }).trim().withMessage("Fields must be between 1 and 96 characters"),
+        check(["body"]).isString().isLength({
+            min: 1,
+            max: 256
+        }).trim().withMessage("Body must be between 1 and 256 characters"),
         authJwt.verifyToken
     ], postController.updatePost)
-    app.post('/api/post/create', [check(["body", "tags", "title", "location"])
+    app.post('/api/post/create', [check(["tags", "title", "location"])
         .isString().isLength({
             min: 1,
-            max: 128
-        }).trim(),
+            max: 96
+        }).trim().withMessage("Fields must be between 1 and 96 characters"),
+        check(["body"]).isString().isLength({
+            min: 1,
+            max: 256
+        }).trim().withMessage("Body must be between 1 and 256 characters"),
         authJwt.verifyToken
     ], uploadFile.single('image'), postController.createPost)
 
