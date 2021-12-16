@@ -1,6 +1,5 @@
 import Header from './components/Header.js'
 import Login from './components/Login.js'
-import Home from './pages/Home.js';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
 import { makeStyles } from '@mui/material'
@@ -33,6 +32,7 @@ function App() {
           <Route exact path='/settings' element= {<Settings/>} />
         </Routes>
       </BrowserRouter>
+      <a style={{color:"white"}}>a</a>
     </div>
   );
 }
