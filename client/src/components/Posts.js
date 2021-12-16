@@ -57,6 +57,7 @@ export default function Posts() {
     const [image, setImage] = React.useState()
     const navigate = useNavigate();
     const currentUser = Auth.getCurrentUser();
+    const [img, setImg] = useState()
 
     //URLs for fetching data
     const API_URL = "http://localhost:8080/"
@@ -64,12 +65,12 @@ export default function Posts() {
 
     //Gets posts from BE
     React.useEffect(() => {
-       if (currentUser === null) return navigate("/login")
+        if (currentUser === null || currentUser === undefined) return navigate("/login")
         axios.get(postUrl, { headers: AuthHeader() }).then((response) => {
             setPosts(response.data)
-            console.log(response.data)
             //axios.get(API_URL)
-            //const postPic = response.image.split("/").reverse()
+            // const postPic = response.data.postMediaName.split("/").reverse()
+            // window.alert(postPic)
             //setImage(postUrl + postPic[0])
             setLoading(false)
             //console.log(response.data.postMediaName)
@@ -81,19 +82,19 @@ export default function Posts() {
     //maps posts.postMediaName
     //let result = posts.map(({postMediaName}) => postMediaName)
     let result = posts.map(a => a.postMediaName)
-    console.log(result)
+    
 
     //stupid function to reformat names in postimage array
-    var reformatImages = function(imgs) {
-        return posts.map(function(imgs) {
-        var newObj = {};
-        newObj["img"] = imgs.postMediaName.split("/").reverse();
-        return newObj;
-        });
-    };
+    // var reformatImages = function(imgs) {
+    //     return posts.map(function(imgs) {
+    //     var newObj = {};
+    //     newObj["img"] = imgs.postMediaName.split("/").reverse();
+    //     return newObj;
+    //     });
+    // };
 
-    var imgArray = reformatImages(posts);
-    console.log(imgArray);
+    // var imgArray = reformatImages(posts);
+    // console.log(imgArray);
 
     // Gets post image from BE
     /*var postImage
@@ -114,7 +115,7 @@ export default function Posts() {
             });
             
     }, []);*/
-
+    
 
     //While posts load
     if (loading) {
@@ -145,15 +146,18 @@ export default function Posts() {
                     spacing={2}
                 >
                     {posts.map((post, key) => {
+                        const postPic = post.postMediaName.split("/").reverse()
+                        const picUrl = API_URL + postPic[0]
+                        // console.log(picUrl)
                         const isEvent = post.isEvent
                         const handleRoute = () =>{ 
-                            navigate("/viewpost/"+ post._id)
+                            navigate("/viewpost/", {state:{postId: post._id}})
                             return <PostView/>
-                          }
+                        }
                         return(
-                            <div>
+                            <div key={key}>
                                 <Card
-                                    key={key}
+                                    
                                     sx={{ minWidth: 760 }}
                                     margin='normal'
                                     style={cardStyle}
@@ -181,40 +185,46 @@ export default function Posts() {
                                                 {post.user.Avatar}
                                             </Avatar>
                                         }
-                                        label={post.user.firstName, post.user.lastName}
+                                        label={post.user.userName}
                                     />
-                                    {console.log(post._id)}
+                                    
                                     <CardHeader
                                         style={cursor}
                                         onClick = {handleRoute} 
                                         title={post.title}
                                         subheader={post.location}
                                     />
-
                                     <CardMedia
-                                        style={{
+                                            style={{
+                                                width: "auto",
+                                                maxHeight: "200px"
+                                            }}
+                                            component={post.postMediaType}
+                                            src={picUrl}
+                                            controls
+                                            alt="post"
+                                        />
+                                    
+                                    {/* <img style={{
                                             width: "auto",
                                             maxHeight: "200px"
-                                        }}
-                                        component={post.postMediaType}
-                                        media={image}
-                                    />
+                                        }} src={API_URL + postPic[0]}  /> */}
                                     <CardContent>
                                         <Typography variant="body1" color="text.secondary">
                                             {post.body}
                                         </Typography>
                                     </CardContent>
                                     <CardActions disableSpacing>
-                                        <Typography variant="body3" aria-label="like">
-                                            <ThumbUpAltIcon/>
+                                        <Typography  aria-label="like">
+                                            Likes: 
                                             {" "}
                                             {post.likes}
                                         </Typography>
                                         <Typography variant="body3" style={white}>
-                                            aaa
+                                            a
                                         </Typography>
-                                        <Typography variant="body3" aria-label="dislike">
-                                            <ThumbDownAltIcon />
+                                        <Typography aria-label="dislike">
+                                            Dislikes: 
                                             {" "}
                                             {post.dislikes}
                                         </Typography>

@@ -20,7 +20,7 @@ const uploadFile = multer({
         if (!file) {
             return cb(new Error('No file!'))
         }
-        // only permit image mimetypes
+        // only permit image or video mimetypes
         const image = file.mimetype.startsWith("image");
         const video = file.mimetype.startsWith("video");
         if (image || video) {

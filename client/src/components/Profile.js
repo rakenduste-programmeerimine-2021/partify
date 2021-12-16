@@ -11,27 +11,47 @@ import {
     Card,
     CardActions,
     IconButton,
+    CardHeader
 } from "@mui/material";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { format, utcToZonedTime } from "date-fns-tz";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import VoteService from "../services/VoteService";
 
+
+
+const cardStyle = {
+    padding: 20
+}
+
 const paperStyle = {
     padding: 20,
-    height: "100%",
-    width: 760,
-    margin: "20px auto",
-};
+    height: '100%',
+    width: 860,
+    margin: '20px auto'
+}
+const comments = {
+    marginLeft: 'auto'
+}
+
+const white = {
+    color: "white"
+}
+
+const cursor = {
+    cursor: "pointer"
+}
 
 const API_URL = "http://localhost:8080/avatar/";
 var isAdminBool = false;
 
-export default function Profile(userId) {
+export default function Profile() {
+    const location = useLocation();
+    
     const navigate = useNavigate();
-    const currentUser = Auth.getCurrentUser();
-
+    
+    
     // Logs user out and redirects to login page
     const onLogout = (e) => {
         e.preventDefault();
@@ -48,10 +68,18 @@ export default function Profile(userId) {
 
     // Gets user information from server
     useEffect(() => {
+        const currentUser = Auth.getCurrentUser();
+        if (currentUser === null || currentUser === undefined || !currentUser) return navigate("/login");
+    if(!location.state) {
+        var userId = currentUser.id} else {
+            var userId = location.state.postId;
+        }
         // console.log(value)
         //console.log(userId.length);
-        if (currentUser === null) return navigate("/login");
-        if (!userId.length) userId = currentUser.id;
+        
+        if (!userId) {
+            const userId = currentUser.id;
+        }
         // setValue(prevState=>!prevState);
         UserService.getUserProfile(userId)
             .then((res) => {
@@ -248,15 +276,21 @@ export default function Profile(userId) {
                     }}
                 >
                     {profile.posts.map((post, key) => {
+                        const handleRoute = () =>{ 
+                            navigate("/viewpost/", {state:{postId: post._id}})
+                            
+                        }
                         return (
                             <Paper style={paperStyle} key={key}>
                                 <Typography variant="h5">
-                                    <NavLink
-                                        to="/register"
-                                        underline="hover"
-                                    >
-                                        {post.title}
-                                    </NavLink>
+                                    <CardHeader
+                                        style={cursor}
+                                        onClick = {handleRoute} 
+                                        title={post.title}
+                                        subheader={post.location}
+                                    />
+                                        
+                                    
                                     <br />
                                     <Typography>
                                         {" "}

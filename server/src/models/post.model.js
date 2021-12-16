@@ -12,7 +12,7 @@ const postSchema = new Schema({
   },
   postMediaType: {
     type: String,
-    enum: ['Image', 'Video'],
+    enum: ['img', 'video'],
     required: true
   },
   postMediaName: {

@@ -50,7 +50,7 @@ describe("Post", () => {
                 .set({
                     'x-access-token': `${userInfo.accessToken}`,
                 })
-                .attach('postFile', fs.readFileSync('/usr/src/app/uploads/avatar/default_avatar.png'), 'default_avatar.png')
+                .attach('image', fs.readFileSync('/usr/src/app/uploads/avatar/default_avatar.png'), 'default_avatar.png')
                 .field("body", "lorem")
                 .field("title", "ipsum")
                 .field("location", "doore")
@@ -199,10 +199,10 @@ describe("Post", () => {
         });
     });
 
-    describe("GET /api/posts/comment/:id", () => {
+    describe("GET /api/post/comments/:id", () => {
         it("Should get specific comment", done => {
             chai.request("localhost:8080")
-                .get(`/api/posts/comment/${userInfo.commentId}`)
+                .get(`/api/post/comments/${userInfo.commentId}`)
                 .set({
                     'x-access-token': `${userInfo.accessToken}`
                 })
