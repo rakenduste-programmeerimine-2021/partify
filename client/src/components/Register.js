@@ -116,8 +116,7 @@ export default class Register extends Component {
         this.onChangeFirstname = this.onChangeFirstname.bind(this);
         this.onChangeLastname = this.onChangeLastname.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
-        this.onChangeConfirmPassword =
-            this.onChangeConfirmPassword.bind(this);
+        this.onChangeConfirmPassword = this.onChangeConfirmPassword.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeDob = this.onChangeDob.bind(this);
         this.onChangePhone = this.onChangePhone.bind(this);
