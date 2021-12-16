@@ -1,4 +1,5 @@
 import axios from 'axios'
+import AuthHeader from './Auth-header';
 const user = JSON.parse(localStorage.getItem("user"))
 const API_URL = 'http://localhost:8080/api/post/'
 
@@ -23,6 +24,13 @@ class PostService {
                 'x-access-token' : user.accessToken
             }}
         )
+    }
+
+    putPost(data) {
+        return axios.put(API_URL + "edit/" + data.id , data ,{ 
+            headers: AuthHeader() }).then(response => {
+            return response.data
+        })
     }
 }
 

@@ -12,7 +12,7 @@ import {
     IconButton, 
     Typography, 
     Chip,
-    Stack 
+    Stack
 } from '@mui/material';
 import { red } from '@mui/material/colors'
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
@@ -20,11 +20,13 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import AuthHeader from "../services/Auth-header";
 import Auth from "../services/Auth";
+import CommentIcon from '@mui/icons-material/Comment';
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function PostView() {
     const location = useLocation();
+    const navigate = useNavigate();
     console.log(location.state.postId)
     const paperStyle = {
         padding: 20,
@@ -43,8 +45,17 @@ export default function PostView() {
     const white = {
         color: "white"
     }
-    const postId = location.state.postId;
 
+    const cursor = {
+        cursor: "pointer"
+    }
+
+
+    if(!location.state) {
+        navigate("/")
+        }
+    const postId = location.state.postId;
+    
     const [post, setPost] = React.useState([])
     const [loading, setLoading] = useState(true)
     const [image, setImage] = React.useState()
@@ -55,7 +66,7 @@ export default function PostView() {
     //const requestPost = axios.get(postUrl)
     //const requestImage = axios.get(imgUrl)
 
-    const navigate = useNavigate();
+   
     const currentUser = Auth.getCurrentUser();
 
     React.useEffect(() => {
@@ -96,6 +107,10 @@ export default function PostView() {
 
     const isEvent = post.isEvent
 
+
+    const handleRoute = () =>{ 
+        navigate("/editpost/", {state:{postId: post._id}})
+    }
     return (
         <div>
             <Grid>
@@ -167,7 +182,11 @@ export default function PostView() {
                             <IconButton aria-label="comment" style={comments} >
                                 <AddCommentIcon />
                             </IconButton>
+                            <IconButton onClick={handleRoute} style={comments} aria-label="comment" >
+                                            <CommentIcon />
+                                        </IconButton>
                         </CardActions>
+                        
                     </Card>
                 </Paper>
                 <Paper style = {paperStyle}>
