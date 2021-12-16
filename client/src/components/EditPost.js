@@ -9,7 +9,7 @@ import {
     FormControlLabel,
     Button,
     IconButton,
-    LinearProgress
+    LinearProgress,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import ImageIcon from "@mui/icons-material/Image";
@@ -19,9 +19,8 @@ import CheckButton from "react-validation/build/button";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import Auth from "../services/Auth";
 import UserService from "../services/UserService";
-import axios from 'axios'
+import axios from "axios";
 import AuthHeader from "../services/Auth-header";
-
 
 const paperStyle = {
     padding: 20,
@@ -31,20 +30,19 @@ const paperStyle = {
 };
 
 const comments = {
-    marginLeft: 'auto'
-}
+    marginLeft: "auto",
+};
 
 const white = {
-    color: "white"
-}
+    color: "white",
+};
 
 const cursor = {
-    cursor: "pointer"
-}
+    cursor: "pointer",
+};
 
 const inputStyle = { margin: "20" };
 const API_URL = "http://localhost:8080/";
-
 
 export default function EditPost() {
     const location = useLocation();
@@ -55,44 +53,51 @@ export default function EditPost() {
         body: "",
         isEvent: false,
     };
-    
+
     const [messages, setMessages] = useState("");
     const navigate = useNavigate();
     const currentUser = Auth.getCurrentUser();
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
-    if(!location.state) {
-        navigate("/")
-        }
-    const postId = location.state.postId
+    try {
+        var postId = location.state.postId;
+    } catch (e) {
+        navigate("/");
+    }
 
-    const postUrl = "http://localhost:8080/api/post/"+postId
-
+    const postUrl = "http://localhost:8080/api/post/" + postId;
 
     useEffect(() => {
-        if(!postId) return navigate("/")
-        if (currentUser === null) return navigate("/login")
-        axios.get(postUrl, { headers: AuthHeader() }).then((response) => {
-            setNewPost({
-                id:response.data._id,
-                title:response.data.title,
-                location: response.data.location,
-                tags: response.data.tags,
-                body: response.data.body,
-                userId: currentUser.id
-            })
-            if(response.data.user._id !== currentUser.id)return navigate("/")
-            setLoading(false)
-        })
+        if (!location.state) {
+            navigate("/");
+        }
+        if (!postId) return navigate("/");
+        if (currentUser === null) return navigate("/login");
+        axios
+            .get(postUrl, { headers: AuthHeader() })
+            .then((response) => {
+                setNewPost({
+                    id: response.data._id,
+                    title: response.data.title,
+                    location: response.data.location,
+                    tags: response.data.tags,
+                    body: response.data.body,
+                    userId: currentUser.id,
+                });
+                if (response.data.user._id !== currentUser.id)
+                    return navigate("/");
+                setLoading(false);
+            });
     }, []);
-    const [newPost, setNewPost] = React.useState([])
+    const [newPost, setNewPost] = React.useState([]);
+
     const handlePostSubmit = (e) => {
         e.preventDefault();
-        console.log(currentUser)
+
         if (!newPost) setMessages("Fill all the fields!");
         PostService.putPost(newPost)
             .then((res) => {
-                navigate("/viewpost/", {state:{postId: postId}})
+                navigate("/viewpost/", { state: { postId: postId } });
             })
             .catch((error) => {
                 if (error.response.data.message) {
@@ -110,7 +115,6 @@ export default function EditPost() {
 
     const onPostChange = (e) => {
         const { name, value } = e.target;
-        console.log(newPost)
         if (name === "isEvent") {
             setNewPost({
                 ...newPost,
@@ -124,6 +128,11 @@ export default function EditPost() {
         }
     };
 
+    const handleDeleteSubmit = (e) => {
+        e.preventDefault();
+        PostService.deletePost(postId);
+        return navigate("/profile");
+    };
 
     if (loading) {
         return (
@@ -134,7 +143,7 @@ export default function EditPost() {
                     </Paper>
                 </Grid>
             </div>
-        )
+        );
     }
 
     return (
@@ -239,6 +248,38 @@ export default function EditPost() {
                     </Paper>
                 </Grid>
             </form>
+
+            <Paper style={paperStyle}>
+                <Grid align={"center"}>
+                    {/* Post deletion */}
+                    <form onSubmit={handleDeleteSubmit}>
+                        <Grid item>
+                            <Typography
+                                style={{ color: "red" }}
+                                variant="h4"
+                            >
+                                DELETE POST
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography>
+                                Once deleted, your post can't be
+                                recovered!
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            {" "}
+                            <Button
+                                variant="contained"
+                                color="error"
+                                type="submit"
+                            >
+                                DELETE
+                            </Button>
+                        </Grid>
+                    </form>
+                </Grid>
+            </Paper>
         </div>
     );
 }

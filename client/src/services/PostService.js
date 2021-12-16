@@ -32,6 +32,12 @@ class PostService {
             return response.data
         })
     }
+
+    deletePost(id){
+        return axios.delete(API_URL + "delete/" + id , { headers: AuthHeader() }).then(response => {
+            return response.data
+        })
+    }
 }
 
 export default new PostService()
