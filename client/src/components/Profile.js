@@ -50,12 +50,7 @@ export default function Profile() {
     const location = useLocation();
     
     const navigate = useNavigate();
-    const currentUser = Auth.getCurrentUser();
-   
-    if(!location.state) {
-        var userId = currentUser.id} else {
-            var userId = location.state.postId;
-        }
+    
     
     // Logs user out and redirects to login page
     const onLogout = (e) => {
@@ -73,9 +68,15 @@ export default function Profile() {
 
     // Gets user information from server
     useEffect(() => {
+        const currentUser = Auth.getCurrentUser();
+        if (currentUser === null || currentUser === undefined || !currentUser) return navigate("/login");
+    if(!location.state) {
+        var userId = currentUser.id} else {
+            var userId = location.state.postId;
+        }
         // console.log(value)
         //console.log(userId.length);
-        if (currentUser === null) return navigate("/login");
+        
         if (!userId) {
             const userId = currentUser.id;
         }

@@ -65,7 +65,7 @@ export default function Posts() {
 
     //Gets posts from BE
     React.useEffect(() => {
-       if (currentUser === null) return navigate("/login")
+        if (currentUser === null || currentUser === undefined) return navigate("/login")
         axios.get(postUrl, { headers: AuthHeader() }).then((response) => {
             setPosts(response.data)
             //axios.get(API_URL)

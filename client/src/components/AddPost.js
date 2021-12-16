@@ -44,7 +44,7 @@ export default function AddPost() {
     const [post, setPost] = useState();
     useEffect(() => {
         
-        if (currentUser === null) return navigate("/login");
+        if (currentUser === null || currentUser === undefined) return navigate("/login");
     }, []);
 
     const handlePostSubmit = (e) => {

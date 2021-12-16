@@ -1,24 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Grid,
     Paper,
     TextField,
     Typography,
-    Avatar,
-    Checkbox,
-    FormControlLabel,
     Button,
-    IconButton,
     LinearProgress,
 } from "@mui/material";
-import { red } from "@mui/material/colors";
-import ImageIcon from "@mui/icons-material/Image";
+
 import PostService from "../services/PostService";
 
-import CheckButton from "react-validation/build/button";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import {  useNavigate, useLocation } from "react-router-dom";
 import Auth from "../services/Auth";
-import UserService from "../services/UserService";
 import axios from "axios";
 import AuthHeader from "../services/Auth-header";
 
@@ -29,30 +22,14 @@ const paperStyle = {
     margin: "20px auto",
 };
 
-const comments = {
-    marginLeft: "auto",
-};
 
-const white = {
-    color: "white",
-};
 
-const cursor = {
-    cursor: "pointer",
-};
 
 const inputStyle = { margin: "20" };
-const API_URL = "http://localhost:8080/";
 
 export default function EditPost() {
     const location = useLocation();
-    const defaultValues = {
-        title: "",
-        location: "",
-        tags: "",
-        body: "",
-        isEvent: false,
-    };
+
 
     const [messages, setMessages] = useState("");
     const navigate = useNavigate();
@@ -72,7 +49,7 @@ export default function EditPost() {
             navigate("/");
         }
         if (!postId) return navigate("/");
-        if (currentUser === null) return navigate("/login");
+        if (currentUser === null || currentUser === undefined) return navigate("/login");
         axios
             .get(postUrl, { headers: AuthHeader() })
             .then((response) => {
