@@ -7,7 +7,7 @@ class PostService {
 
     }
 
-    createPost(data){
+    createPost(data, userId){
         const fData = new FormData() 
         fData.append('image', data.image)
         fData.append('body', data.body)
@@ -16,6 +16,7 @@ class PostService {
         fData.append('location', data.location)
         if(!data.isEvent)data.isEvent = false
         fData.append('isEvent', data.isEvent)
+        fData.append('userId', userId)
         return axios.post(API_URL + "create", fData, 
             { headers: { 
                 'Content-Type': data.image.type,

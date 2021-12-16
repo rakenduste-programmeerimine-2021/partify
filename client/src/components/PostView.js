@@ -21,10 +21,11 @@ import AddCommentIcon from '@mui/icons-material/AddComment';
 import AuthHeader from "../services/Auth-header";
 import Auth from "../services/Auth";
 import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function PostView() {
-
+    const location = useLocation();
+    console.log(location.state.postId)
     const paperStyle = {
         padding: 20,
         height: '100%',
@@ -42,13 +43,13 @@ export default function PostView() {
     const white = {
         color: "white"
     }
-
+    const postId = location.state.postId;
 
     const [post, setPost] = React.useState([])
     const [loading, setLoading] = useState(true)
     const [image, setImage] = React.useState()
 
-    const postUrl = "http://localhost:8080/api/post/61b912ceccf25e59c264dba9"
+    const postUrl = "http://localhost:8080/api/post/"+postId
     const imgUrl = "http://localhost:8080/"
     //cant get the uploads for some reason
     //const requestPost = axios.get(postUrl)
@@ -58,6 +59,8 @@ export default function PostView() {
     const currentUser = Auth.getCurrentUser();
 
     React.useEffect(() => {
+        console.log(postId)
+        if(postId.length === undefined) return navigate("/")
         if (currentUser === null) return navigate("/login")
         axios.get(postUrl, { headers: AuthHeader() }).then((response) => {
             setPost(response.data)

@@ -63,6 +63,7 @@ describe("User", () => {
                     "userName": "loremIpsum",
                     "phone": 54541010,
                     "gender": "Other",
+                    "email": "testt@test.com"
                 })
                 .end(function (req, res) {
                     res.should.have.status(200);
@@ -71,6 +72,7 @@ describe("User", () => {
         });
 
     });
+
     describe("PUT user/:id/update/avatar", () => {
         it("Should fail, no image provided", done => {
             chai.request("localhost:8080")

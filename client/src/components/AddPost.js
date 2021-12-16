@@ -43,13 +43,15 @@ export default function AddPost() {
 
     const [post, setPost] = useState();
     useEffect(() => {
+        
         if (currentUser === null) return navigate("/login");
     }, []);
 
     const handlePostSubmit = (e) => {
         e.preventDefault();
+        console.log(currentUser)
         if (!post) setMessages("Fill all the fields!");
-        PostService.createPost(post)
+        PostService.createPost(post, currentUser.id)
             .then((res) => {
                 navigate("/profile");
             })

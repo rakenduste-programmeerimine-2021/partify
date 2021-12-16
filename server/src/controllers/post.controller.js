@@ -34,9 +34,9 @@ exports.createPost = async function (req, res) {
             const imageTypes = ['PNG', 'JPG', 'SVG', 'GIF']
             const videoTypes = ['MPG', 'MOV', 'WMV', 'RM', 'MP4', 'MKV', 'AVI']
             if (imageTypes.includes(fileExtension.toUpperCase())) {
-                var postMediaType = "Image"
+                var postMediaType = "img"
             } else if (videoTypes.includes(fileExtension.toUpperCase())) {
-                var postMediaType = "Video"
+                var postMediaType = "video"
             } else {
                 var postMediaType = "None"
                 return
