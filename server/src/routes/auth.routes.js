@@ -60,7 +60,7 @@ module.exports = function (app) {
                 }
             }),
             check("phone")
-            .isMobilePhone(),
+            .isMobilePhone().withMessage("Please enter correct phone number"),
             check("dateOfBirth")
             .isBefore(minDoB())
             .withMessage("Must be at least 18 years old!")

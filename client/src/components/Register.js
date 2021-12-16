@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useRef } from "react";
 import {
     TextField,
     Grid,
@@ -21,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 // const goToLog = () =>{
 //     const navigate = useNavigate();
 // }
-
 
 //styles
 const paperStyle = {
@@ -108,336 +107,268 @@ const vPhone = (value) => {
     }
 };
 
-export default class Register extends Component {
-    constructor(props) {
-        super(props);
-        this.handleRegister = this.handleRegister.bind(this);
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangeFirstname = this.onChangeFirstname.bind(this);
-        this.onChangeLastname = this.onChangeLastname.bind(this);
-        this.onChangePassword = this.onChangePassword.bind(this);
-        this.onChangeConfirmPassword = this.onChangeConfirmPassword.bind(this);
-        this.onChangeEmail = this.onChangeEmail.bind(this);
-        this.onChangeDob = this.onChangeDob.bind(this);
-        this.onChangePhone = this.onChangePhone.bind(this);
-        this.onChangeGender = this.onChangeGender.bind(this);
+export default function Register() {
+    const form = useRef();
+    const checkBtn = useRef();
+    const navigate = useNavigate();
+    const defaultValues = {
+        userName: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirm_password: "",
+        phone: "",
+        dateOfBirth: new Date().toLocaleString(),
+        gender: "Female",
+    };
 
-        this.state = {
-            userName: "",
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            confirm_password: "",
-            phone: "",
-            dateOfBirth: new Date().toLocaleString(),
-            gender: "Female",
-        };
-    }
+    const [formValues, setFormValues] = useState(defaultValues);
+    const [message, setMessage] = useState([]);
 
-    onChangeFirstname(e) {
-        this.setState({
-            firstName: e.target.value,
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues({
+            ...formValues,
+            [name]: value,
         });
-    }
-    onChangeLastname(e) {
-        this.setState({
-            lastName: e.target.value,
-        });
-    }
+    };
 
-    onChangeUsername(e) {
-        this.setState({
-            userName: e.target.value,
-        });
-    }
-
-    onChangeEmail(e) {
-        this.setState({
-            email: e.target.value,
-        });
-    }
-
-    onChangePassword(e) {
-        this.setState({
-            password: e.target.value,
-        });
-    }
-
-    onChangeConfirmPassword(e) {
-        this.setState({
-            confirm_password: e.target.value,
-        });
-    }
-
-    onChangePhone(e) {
-        this.setState({
-            phone: e.target.value,
-        });
-    }
-
-    onChangeDob(e) {
-        this.setState({
-            dateOfBirth: e.target.value,
-        });
-    }
-
-    onChangeGender(e) {
-        this.setState({
-            gender: e.target.value,
-        });
-    }
-
-    handleRegister(e) {
+    const handleRegister = (e) => {
         e.preventDefault();
 
-        this.setState({
-            message: "",
-            successful: false,
-        });
+        form.current.validateAll();
 
-        this.form.validateAll();
+        console.log(formValues)
 
-        const { password, confirm_password } = this.state;
-        if (password !== confirm_password) {
-            this.checkBtn.context._errors.length += 1;
-            return (
-                <div className="alert alert-danger" role="alert">
-                    The passwords must match.
-                </div>
-            );
+        if (formValues.password !== formValues.confirm_password) {
+            checkBtn.current.context._errors.length += 1;
+            setMessage({
+                message: "Passwords don't match"
+            });
         }
 
-        if (this.checkBtn.context._errors.length === 0) {
-            Auth.register(
-                this.state.firstName,
-                this.state.lastName,
-                this.state.userName,
-                this.state.email,
-                this.state.password,
-                this.state.confirm_password,
-                this.state.dateOfBirth,
-                this.state.phone,
-                this.state.gender
-            ).then(
+        if (checkBtn.current.context._errors.length === 0) {
+            Auth.register(formValues).then(
                 (response) => {
-                    this.setState({
+                    console.log("11111")
+                    // setFormValues(defaultValues);
+                    setMessage({
                         message: response.data.message,
                         successful: true,
                     });
+                    return navigate("/");
                 },
                 (error) => {
-                    const resMessage =
-                        (error.response &&
+                    console.log(error);
+                    // setFormValues(defaultValues);
+                    if (error.response.data.message) {
+                        const resMessage =
+                            error.response &&
                             error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-
-                    this.setState({
-                        successful: false,
-                        message: resMessage,
-                    });
+                            error.response.data.message;
+                            setMessage({
+                            message: resMessage,
+                            successful: true,
+                        });
+                    } else {
+                        const resMessage =
+                            error.response.data.msg[0].msg;
+                            setMessage({
+                            message: resMessage,
+                            successful: true,
+                        });
+                    }
                 }
             );
         }
-    }
+    };
 
-    render() {
-        return (
-            <div>
-                <Form
-                    onSubmit={this.handleRegister}
-                    ref={(c) => {
-                        this.form = c;
-                    }}
-                >
-                    <Grid>
-                        <Paper elevation={10} style={paperStyle}>
-                            <Grid align={"center"}>
-                                <Avatar style={avatarStyle}>
-                                    <CelebrationIcon />
-                                </Avatar>
-                                <h2>Register to the party!</h2>
+    return (
+        <div>
+            <Form onSubmit={handleRegister} ref={form}>
+                <Grid>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Grid align={"center"}>
+                            <Avatar style={avatarStyle}>
+                                <CelebrationIcon />
+                            </Avatar>
+                            <h2>Register to the party!</h2>
 
-                                <TextField
-                                    margin="dense"
-                                    label="First Name"
-                                    type="string"
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.firstName}
-                                    onChange={this.onChangeFirstname}
-                                    validations={[required]}
-                                />
+                            <TextField
+                                margin="dense"
+                                name="firstName"
+                                label="First Name"
+                                type="string"
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.firstName}
+                                onChange={handleInputChange}
+                                validations={[required]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Last Name"
-                                    type="string"
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.lastName}
-                                    onChange={this.onChangeLastname}
-                                    validations={[required]}
-                                />
+                            <TextField
+                                margin="dense"
+                                label="Last Name"
+                                name="lastName"
+                                type="string"
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.lastName}
+                                onChange={handleInputChange}
+                                validations={[required]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Email"
-                                    type="email"
-                                    fullWidth
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.email}
-                                    onChange={this.onChangeEmail}
-                                    validations={[required, email]}
-                                />
+                            <TextField
+                                margin="dense"
+                                label="Email"
+                                type="email"
+                                name="email"
+                                fullWidth
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.email}
+                                onChange={handleInputChange}
+                                validations={[required, email]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Date of Birth"
-                                    type="date"
-                                    defaultValue="2000-05-24"
-                                    InputLabelProps={{ shrink: true }}
-                                    fullWidth
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.dateOfBirth}
-                                    onChange={this.onChangeDob}
-                                    validations={[
-                                        required,
-                                        vDateofBirth,
-                                    ]}
-                                />
+                            <TextField
+                                margin="dense"
+                                label="Date of Birth"
+                                type="date"
+                                name="dateOfBirth"
+                                defaultValue="2000-05-24"
+                                InputLabelProps={{ shrink: true }}
+                                fullWidth
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.dateOfBirth}
+                                onChange={handleInputChange}
+                                validations={[required, vDateofBirth]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Username"
-                                    type="string"
-                                    fullWidth
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.userName}
-                                    onChange={this.onChangeUsername}
-                                    validations={[required, vusername]}
-                                />
+                            <TextField
+                                margin="dense"
+                                label="Username"
+                                type="string"
+                                name="userName"
+                                fullWidth
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.userName}
+                                onChange={handleInputChange}
+                                validations={[required, vusername]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Phone number"
-                                    type="string"
-                                    fullWidth
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.phone}
-                                    onChange={this.onChangePhone}
-                                    validations={[required, vPhone]}
-                                />
+                            <TextField
+                                margin="dense"
+                                label="Phone number"
+                                type="string"
+                                name="phone"
+                                fullWidth
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.phone}
+                                onChange={handleInputChange}
+                                validations={[required, vPhone]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Password"
-                                    type="password"
-                                    fullWidth
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.password}
-                                    onChange={this.onChangePassword}
-                                    validations={[required, vpassword]}
-                                />
+                            <TextField
+                                margin="dense"
+                                name="password"
+                                label="Password"
+                                type="password"
+                                fullWidth
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.password}
+                                onChange={handleInputChange}
+                                validations={[required, vpassword]}
+                            />
 
-                                <TextField
-                                    margin="dense"
-                                    label="Repeat Password"
-                                    type="password"
-                                    fullWidth
-                                    required
-                                    id="filled-basic"
-                                    variant="filled"
-                                    value={this.state.confirm_password}
-                                    onChange={
-                                        this.onChangeConfirmPassword
-                                    }
-                                    validations={[required]}
-                                />
+                            <TextField
+                                margin="dense"
+                                name="confirm_password"
+                                label="Repeat Password"
+                                type="password"
+                                fullWidth
+                                required
+                                id="filled-basic"
+                                variant="filled"
+                                value={formValues.confirm_password}
+                                onChange={handleInputChange}
+                                validations={[required]}
+                            />
 
-                                <FormControl
-                                    margin="normal"
-                                    component="fieldset"
+                            <FormControl
+                                margin="normal"
+                                component="fieldset"
+                            >
+                                <RadioGroup
+                                    name="gender"
+                                    value={formValues.gender}
+                                    onChange={handleInputChange}
+                                    row
                                 >
-                                    <RadioGroup
-                                        row
-                                        aria-label="gender"
-                                        name="row-radio-buttons-group"
-                                    >
-                                        <FormControlLabel
-                                            control={<Radio />}
-                                            label="Female"
-                                            value="Female"
-                                            checked={
-                                                this.state.gender ===
-                                                "Female"
-                                            }
-                                            onChange={
-                                                this.onChangeGender
-                                            }
-                                        />
-                                        <FormControlLabel
-                                            control={<Radio />}
-                                            label="Male"
-                                            value="Male"
-                                            checked={
-                                                this.state.gender ===
-                                                "Male"
-                                            }
-                                            onChange={
-                                                this.onChangeGender
-                                            }
-                                        />
-                                        <FormControlLabel
-                                            control={<Radio />}
-                                            label="Other"
-                                            value="Other"
-                                            checked={
-                                                this.state.gender ===
-                                                "Other"
-                                            }
-                                            onChange={
-                                                this.onChangeGender
-                                            }
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                                <CheckButton
-                                    style={{ display: "none" }}
-                                    ref={(c) => {
-                                        this.checkBtn = c;
-                                    }}
-                                />
-                            </Grid>
+                                    <FormControlLabel
+                                        key="Male"
+                                        value="Male"
+                                        control={<Radio size="small" />}
+                                        label="Male"
+                                    />
+                                    <FormControlLabel
+                                        key="Female"
+                                        value="Female"
+                                        control={<Radio size="small" />}
+                                        label="Female"
+                                    />
+                                    <FormControlLabel
+                                        key="Other"
+                                        value="Other"
+                                        control={<Radio size="small" />}
+                                        label="Other"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            <CheckButton
+                                style={{ display: "none" }}
+                                ref={checkBtn}
+                            />
+                        </Grid>
+                        <h2 />
+                        <Grid item align="center">
+                            {" "}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                            >
+                                REGISTER
+                            </Button>
+                        </Grid>
+                        <Grid>
                             <h2 />
-                            <Grid item align="center">
-                                {" "}
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                >
-                                    REGISTER
-                                </Button>
-                            </Grid>
-                        </Paper>
-                    </Grid>
-                </Form>
-            </div>
-        );
-    }
+                            {message.message && (
+                                <div className="form-group">
+                                    <div
+                                        className="alert alert-danger"
+                                        role="alert"
+                                    >
+                                        {message.message}
+                                    </div>
+                                </div>
+                            )}
+                        </Grid>
+                    </Paper>
+                </Grid>
+            </Form>
+        </div>
+    );
 }
