@@ -95,7 +95,7 @@ export default function Settings() {
     };
 
     useEffect(() => {
-        if (currentUser === null) return navigate("/login");
+        if (currentUser === null || currentUser === undefined) return navigate("/login");
         UserService.getUserProfile(currentUser.id)
             .then((res) => {
                 const avatarPic = res.avatar.split("/").reverse();
