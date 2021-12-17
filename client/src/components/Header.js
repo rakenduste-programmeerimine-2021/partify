@@ -10,6 +10,7 @@ import {
 import IconButton from "@mui/material/IconButton";
 import LoginIcon from "@mui/icons-material/Login";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
@@ -89,7 +90,7 @@ export default function Header() {
                                 to="/addpost"
                             />
                             <Tab
-                                icon={<PersonPinIcon />}
+                                icon={<HomeRoundedIcon />}
                                 aria-label="person"
                                 component={NavLink}
                                 to="/viewpost"

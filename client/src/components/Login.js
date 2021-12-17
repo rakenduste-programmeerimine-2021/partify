@@ -114,9 +114,11 @@ export default function Login() {
                             <h2>Welcome to the party!</h2>
                         </Grid>
                         <Stack spacing={2}>
-                            <Grid item>
+                            <Grid item align={"center"}>
                                 <Grid item>
                                     <TextField
+                                        fullWidth
+                                        margin="dense"
                                         id="email"
                                         name="email"
                                         label="Email"
@@ -128,6 +130,8 @@ export default function Login() {
                                 </Grid>
                                 <Grid item>
                                     <TextField
+                                        fullWidth
+                                        margin="dense"
                                         id="password"
                                         name="password"
                                         label="Password"

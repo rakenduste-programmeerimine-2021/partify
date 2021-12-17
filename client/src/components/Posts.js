@@ -16,14 +16,15 @@ import {
     Chip
 } from '@mui/material'
 import { red } from '@mui/material/colors'
-import { gray } from '@mui/material/colors'
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from "react-router-dom";
 import AuthHeader from '../services/Auth-header';
 import Auth from '../services/Auth';
 import CommentIcon from '@mui/icons-material/Comment';
 import PostView from "./PostView"
+import Profile from "./Profile"
 
 
 export default function Posts() {
@@ -154,6 +155,10 @@ export default function Posts() {
                             navigate("/viewpost/", {state:{postId: post._id}})
                             return <PostView/>
                         }
+                        const handleUser = () =>{
+                            navigate("/profile/", {state:{postId: post.user._id}})
+                            return <Profile/>
+                        }
                         return(
                             <div key={key}>
                                 <Card
@@ -162,31 +167,36 @@ export default function Posts() {
                                     margin='normal'
                                     style={cardStyle}
                                 >
+                                    <Stack direction="row">
+                                        <Chip
+                                            onClick={handleUser}
+                                            size='big'
+                                            avatar={
+                                                <Avatar>
+                                                    {post.user.Avatar}
+                                                </Avatar>
+                                            }
+                                            label={post.user.userName}
+                                        />
+
                                     <div
                                         style={{
                                             display: isEvent
                                                 ? "block"
                                                 : "none",
+                                            marginLeft:"auto"
                                         }}
                                     >
                                         <Chip
                                             size="small" 
-                                            style = {comments}
                                             sx={{ bgcolor: red[500]}}
                                             label="Event"
                                         />
-                                        <h2/>
+                                    
                                     </div>
-                                    <Chip
-                                        //onClick => post.user /profile
-                                        size='big'
-                                        avatar={
-                                            <Avatar>
-                                                {post.user.Avatar}
-                                            </Avatar>
-                                        }
-                                        label={post.user.userName}
-                                    />
+                                    </Stack>
+                                   
+                                    
                                     
                                     <CardHeader
                                         style={cursor}
@@ -210,7 +220,7 @@ export default function Posts() {
                                             maxHeight: "200px"
                                         }} src={API_URL + postPic[0]}  /> */}
                                     <CardContent>
-                                        <Typography variant="body1" color="text.secondary">
+                                        <Typography variant="body1" color="text.primary">
                                             {post.body}
                                         </Typography>
                                     </CardContent>
