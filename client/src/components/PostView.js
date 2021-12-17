@@ -65,7 +65,7 @@ export default function PostView() {
     const [image, setImage] = React.useState();
     const [value, setValue] = React.useState(false)
     const [input, setInput] = React.useState(false)
-    const [postComment, setComment] = useState()
+    const [postComment, setComment] = useState([])
     const [commentValue, setCommentValue] = React.useState(false)
 
     const imgUrl = "http://localhost:8080/";
@@ -189,14 +189,16 @@ export default function PostView() {
         setComment({
             ...postComment,
             [name]: value,
+            userId: currentUser.id
         });
+        
         console.log(postComment)
     };
 
     const handleComment = (e) => {
         e.preventDefault();
-    
-        VoteService.putComment(post._id, currentUser._id, postComment)
+        console.log(post._id,  postComment)
+        VoteService.putComment(post._id,  postComment)
             
     }
 
@@ -387,7 +389,7 @@ export default function PostView() {
                                             onClick={handleCommentLike}
                                         >
                                             <ThumbUpAltIcon />
-                                            {post.comment.likes}
+                                            {comment.likes}
                                         </IconButton>
                                         <Typography variant="body3" style={white}>
                                             aaa
@@ -397,7 +399,7 @@ export default function PostView() {
                                             onClick={handleCommentDislike}    
                                         >
                                             <ThumbDownAltIcon />
-                                            {post.comment.dislikes}
+                                            {comment.dislikes}
                                         </IconButton>
                                     </CardActions>
                                     </Card>
