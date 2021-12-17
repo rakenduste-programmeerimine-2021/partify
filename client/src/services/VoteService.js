@@ -40,12 +40,14 @@ class voteService {
             return response.data
         })
     }
-    putComment(postId, data, userId) {
+    putComment(postId, bodyText, userId) {
         const cData = new FormData()
         cData.append('userId', userId)
-        cData.append('post', postId)
-        cData.append('body', data)
-        return axios.post(API_URL + "posts/" + postId + "/comment", cData,
+        cData.append('body', bodyText)
+        
+        
+        // console.log(cData)
+        return axios.post(API_URL + "posts/" + postId + "/comment", bodyText,
             { headers: AuthHeader() }).then(response => {
                 console.log(response.data)}
         )
