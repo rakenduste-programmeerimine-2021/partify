@@ -1,6 +1,6 @@
 import axios from 'axios';
 import AuthHeader from './Auth-header';
-
+const user = JSON.parse(localStorage.getItem("user"))
 const API_URL = 'http://localhost:8080/api/';
 class voteService {
 
@@ -39,6 +39,16 @@ class voteService {
             headers: AuthHeader() }).then(response => {
             return response.data
         })
+    }
+    putComment(postId, data, userId) {
+        const cData = new FormData()
+        cData.append('userId', userId)
+        cData.append('post', postId)
+        cData.append('body', data)
+        return axios.post(API_URL + "posts/" + postId + "/comment", cData,
+            { headers: AuthHeader() }).then(response => {
+                console.log(response.data)}
+        )
     }
 
 }

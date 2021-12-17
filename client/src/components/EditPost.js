@@ -219,7 +219,7 @@ export default function EditPost() {
                         </Grid>
 
                         <h2 />
-                        <Button fullWidth type="submit">
+                        <Button  variant="contained" type="submit">
                             Post
                         </Button>
                     </Paper>
