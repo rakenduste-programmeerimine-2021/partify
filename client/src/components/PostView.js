@@ -389,7 +389,7 @@ export default function PostView() {
                                             onClick={handleCommentLike}
                                         >
                                             <ThumbUpAltIcon />
-                                            {post.comment.likes}
+                                            {comment.likes}
                                         </IconButton>
                                         <Typography variant="body3" style={white}>
                                             aaa
@@ -399,7 +399,7 @@ export default function PostView() {
                                             onClick={handleCommentDislike}    
                                         >
                                             <ThumbDownAltIcon />
-                                            {post.comment.dislikes}
+                                            {comment.dislikes}
                                         </IconButton>
                                     </CardActions>
                                     </Card>
